@@ -1,0 +1,6 @@
+bin
+obj
+*.suo
+deploy/
+packages/
+/PicDB/*.user
