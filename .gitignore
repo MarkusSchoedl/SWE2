@@ -1,6 +1,9 @@
 bin
 obj
 *.suo
+*.sln
 deploy/
 packages/
 /PicDB/*.user
+*.lock
+.vs/

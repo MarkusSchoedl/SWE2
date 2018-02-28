@@ -37,7 +37,7 @@ namespace Uebungen
 
         public void TestSetup(string picturePath)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public ICameraModel GetCameraModel(string producer, string make)

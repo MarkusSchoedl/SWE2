@@ -21,7 +21,7 @@ namespace Uebungen
 
         public void TestSetup(string picturePath)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public IDataAccessLayer GetDataAccessLayer()
