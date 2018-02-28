@@ -7,3 +7,5 @@ packages/
 /PicDB/*.user
 *.lock
 .vs/
+
+!Libs/BIF-SWE2.Interfaces.dll
