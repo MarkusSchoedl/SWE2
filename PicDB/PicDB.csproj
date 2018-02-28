@@ -58,12 +58,29 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BusinessLayer.cs" />
+    <Compile Include="DataAccessLayer.cs" />
+    <Compile Include="Models\CameraModel.cs" />
+    <Compile Include="Models\EXIFModel.cs" />
+    <Compile Include="Models\IPTCModel.cs" />
+    <Compile Include="Models\PhotographerModel.cs" />
+    <Compile Include="Models\PictureModel.cs" />
     <Compile Include="Uebungen\UEB3.cs" />
     <Compile Include="Uebungen\UEB4.cs" />
     <Compile Include="Uebungen\UEB5.cs" />
     <Compile Include="Uebungen\UEB6.cs" />
     <Compile Include="Uebungen\UEB2.cs" />
     <Compile Include="Uebungen\UEB1.cs" />
+    <Compile Include="ViewModels\CameraListViewModel.cs" />
+    <Compile Include="ViewModels\CameraViewModel.cs" />
+    <Compile Include="ViewModels\EXIFViewModel.cs" />
+    <Compile Include="ViewModels\IPTCViewModel.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\PhotographerListViewModel.cs" />
+    <Compile Include="ViewModels\PhotographerViewModel.cs" />
+    <Compile Include="ViewModels\PictureListViewModel.cs" />
+    <Compile Include="ViewModels\PictureViewModel.cs" />
+    <Compile Include="ViewModels\SearchViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -95,12 +112,14 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="my.runsettings" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

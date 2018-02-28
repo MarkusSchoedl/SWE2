@@ -6,6 +6,8 @@ using BIF.SWE2.Interfaces;
 using BIF.SWE2.Interfaces.Models;
 using BIF.SWE2.Interfaces.ViewModels;
 using PicDB;
+using PicDB.Models;
+using PicDB.ViewModels;
 
 namespace Uebungen
 {
@@ -23,72 +25,72 @@ namespace Uebungen
 
         public IDataAccessLayer GetAnyDataAccessLayer()
         {
-            throw new NotImplementedException();
+            return new DataAccessLayer();
         }
 
         public IBusinessLayer GetBusinessLayer()
         {
-            throw new NotImplementedException();
+            return new BusinessLayer();
         }
 
-        public BIF.SWE2.Interfaces.Models.IEXIFModel GetEmptyEXIFModel()
+        public IEXIFModel GetEmptyEXIFModel()
         {
-            throw new NotImplementedException();
+            return new EXIFModel();
         }
 
-        public BIF.SWE2.Interfaces.ViewModels.IEXIFViewModel GetEmptyEXIFViewModel()
+        public IEXIFViewModel GetEmptyEXIFViewModel()
         {
-            throw new NotImplementedException();
+            return new EXIFViewModel();
         }
 
-        public BIF.SWE2.Interfaces.Models.IIPTCModel GetEmptyIPTCModel()
+        public IIPTCModel GetEmptyIPTCModel()
         {
-            throw new NotImplementedException();
+            return new IPTCModel();
         }
 
-        public BIF.SWE2.Interfaces.ViewModels.IIPTCViewModel GetEmptyIPTCViewModel()
+        public IIPTCViewModel GetEmptyIPTCViewModel()
         {
-            throw new NotImplementedException();
+            return new IPTCViewModel();
         }
 
-        public BIF.SWE2.Interfaces.ViewModels.IMainWindowViewModel GetEmptyMainWindowViewModel()
+        public IMainWindowViewModel GetEmptyMainWindowViewModel()
         {
-            throw new NotImplementedException();
+            return new MainWindowViewModel();
         }
 
-        public BIF.SWE2.Interfaces.ViewModels.IPhotographerListViewModel GetEmptyPhotographerListViewModel()
+        public IPhotographerListViewModel GetEmptyPhotographerListViewModel()
         {
-            throw new NotImplementedException();
+            return new PhotographerListViewModel();
         }
 
-        public BIF.SWE2.Interfaces.Models.IPhotographerModel GetEmptyPhotographerModel()
+        public IPhotographerModel GetEmptyPhotographerModel()
         {
-            throw new NotImplementedException();
+            return new PhotographerModel();
         }
 
-        public BIF.SWE2.Interfaces.ViewModels.IPhotographerViewModel GetEmptyPhotographerViewModel()
+        public IPhotographerViewModel GetEmptyPhotographerViewModel()
         {
-            throw new NotImplementedException();
+            return new PhotographerViewModel();
         }
 
-        public BIF.SWE2.Interfaces.ViewModels.IPictureListViewModel GetEmptyPictureListViewModel()
+        public IPictureListViewModel GetEmptyPictureListViewModel()
         {
-            throw new NotImplementedException();
+            return new PictureListViewModel();
         }
 
-        public BIF.SWE2.Interfaces.Models.IPictureModel GetEmptyPictureModel()
+        public IPictureModel GetEmptyPictureModel()
         {
-            throw new NotImplementedException();
+            return new PictureModel();
         }
 
-        public BIF.SWE2.Interfaces.ViewModels.IPictureViewModel GetEmptyPictureViewModel()
+        public IPictureViewModel GetEmptyPictureViewModel()
         {
-            throw new NotImplementedException();
+            return new PictureViewModel();
         }
 
-        public BIF.SWE2.Interfaces.ViewModels.ISearchViewModel GetEmptySearchViewModel()
+        public ISearchViewModel GetEmptySearchViewModel()
         {
-            throw new NotImplementedException();
+            return new SearchViewModel();
         }
 
         public void TestSetup(string picturePath)
@@ -98,17 +100,17 @@ namespace Uebungen
 
         public ICameraModel GetEmptyCameraModel()
         {
-            throw new NotImplementedException();
+            return new CameraModel();
         }
 
         public ICameraListViewModel GetEmptyCameraListViewModel()
         {
-            throw new NotImplementedException();
+            return new CameraListViewModel();
         }
 
         public ICameraViewModel GetEmptyCameraViewModel()
         {
-            throw new NotImplementedException();
+            return new CameraViewModel();
         }
     }
 }

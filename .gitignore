@@ -1,11 +1,11 @@
+!Libs/BIF-SWE2.Interfaces.dll
+
 bin
 obj
 *.suo
-*.sln
 deploy/
 packages/
 /PicDB/*.user
 *.lock
 .vs/
-
-!Libs/BIF-SWE2.Interfaces.dll
+*.sln
