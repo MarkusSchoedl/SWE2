@@ -8,4 +8,4 @@ packages/
 /PicDB/*.user
 *.lock
 .vs/
-*.sln
+BIF-SWE2-Work.sln
