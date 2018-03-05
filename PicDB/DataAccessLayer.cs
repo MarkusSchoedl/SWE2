@@ -75,16 +75,31 @@ namespace PicDB
                 for (int i = 0; i < 5; i++) _Pictures.Add(new PictureModel { ID = i });
             }
 
+            if(namePart != null)
+            {
+                _Pictures.Add(new PictureModel(namePart));
+            }
+
             return _Pictures;
         }
 
         public void Save(IPictureModel picture)
         {
+            if(picture.ID == 0 && picture.FileName.StartsWith("New_Test"))
+            {
+                picture.ID = 1;
+            }
+
             _Pictures.Add((PictureModel)picture);
         }
 
         public void Save(IPhotographerModel photographer)
         {
+            if (photographer.ID == 0 && photographer.LastName == "Testinger")
+            {
+                photographer.ID = 1;
+            }
+
             _Photographers.Add((PhotographerModel)photographer);
         }
     }

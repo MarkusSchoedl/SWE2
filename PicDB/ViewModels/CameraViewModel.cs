@@ -13,9 +13,14 @@ namespace PicDB.ViewModels
     {
         public CameraViewModel(ICameraModel model)
         {
-            Producer = model.Producer;
-            Make = model.Make;
-            
+            if (model != null)
+            {
+                Producer = model.Producer;
+                Make = model.Make;
+
+                ISOLimitAcceptable = model.ISOLimitAcceptable;
+                ISOLimitGood = model.ISOLimitGood;
+            }
         }
 
         public CameraViewModel()
@@ -31,15 +36,38 @@ namespace PicDB.ViewModels
 
         public int NumberOfPictures { get; set; }
 
-        public bool IsValid { get; set; }
+        public bool IsValid => IsValidBoughtOn && IsValidMake && IsValidProducer;
 
-        public string ValidationSummary { get; set; }
+        public string ValidationSummary
+        {
+            get
+            {
+                string summary = "";
 
-        public bool IsValidProducer { get; set; }
+                if(!IsValidBoughtOn)
+                {
+                    summary += "The given Date is not valid. ";
+                }
+                if(!IsValidMake)
+                {
+                    summary += "The given Make is not valid. ";
+                }
+                if(!IsValidProducer)
+                {
+                    summary += "The given Producer is not valid. ";
+                }
 
-        public bool IsValidMake { get; set; }
+                summary = String.IsNullOrEmpty(summary) ? null : summary;
 
-        public bool IsValidBoughtOn { get; set; }
+                return summary;
+            }
+        }
+
+        public bool IsValidProducer => !String.IsNullOrEmpty(Producer);
+
+        public bool IsValidMake => !String.IsNullOrEmpty(Make);
+
+        public bool IsValidBoughtOn => BoughtOn == null ? true : DateTime.Today > BoughtOn;
 
         public decimal ISOLimitGood { get; set; }
         public decimal ISOLimitAcceptable { get; set; }

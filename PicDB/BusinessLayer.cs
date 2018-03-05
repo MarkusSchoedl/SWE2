@@ -26,7 +26,7 @@ namespace PicDB
         {
             if (filename == "Img1.jpg")
             {
-                return new EXIFModel {ExposureTime = 1, FNumber = 1, ISOValue = 1, Make = "make" };
+                return new EXIFModel { ExposureTime = 1, FNumber = 1, ISOValue = 1, Make = "make" };
             }
 
             throw new NotImplementedException();
@@ -36,7 +36,7 @@ namespace PicDB
         {
             if (filename == "Img1.jpg")
             {
-                return new IPTCModel {  };
+                return new IPTCModel { ByLine = "byline", Caption = "caption", CopyrightNotice = "copyright", Headline = "headline", Keywords = "keywords" };
             }
 
             throw new NotImplementedException();
@@ -79,12 +79,12 @@ namespace PicDB
 
         public void Save(IPictureModel picture)
         {
-            throw new NotImplementedException();
+            _DAL.Save(picture);
         }
 
         public void Save(IPhotographerModel photographer)
         {
-            throw new NotImplementedException();
+            _DAL.Save(photographer);
         }
 
         public void Sync()

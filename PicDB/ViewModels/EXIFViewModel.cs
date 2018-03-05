@@ -17,7 +17,7 @@ namespace PicDB.ViewModels
 
         public EXIFViewModel(EXIFModel model)
         {
-            if(model != null)
+            if (model != null)
             {
                 Make = model.Make;
                 FNumber = model.FNumber;
@@ -27,7 +27,6 @@ namespace PicDB.ViewModels
                 ExposureProgram = model.ExposureProgram.ToString();
                 ExposureProgramResource = model.ExposureProgram.ToString();
                 Camera = new CameraViewModel();
-                ISORating = new ISORatings();
                 ISORatingResource = model.ISOValue.ToString();
             }
         }
@@ -38,7 +37,31 @@ namespace PicDB.ViewModels
 
         public decimal ExposureTime { get; set; }
 
-        public decimal ISOValue { get; set; }
+        private decimal _ISOValue;
+        public decimal ISOValue
+        {
+            get => _ISOValue;
+            set
+            {
+                _ISOValue = value;
+                if (value > 0 && value < 500)
+                {
+                    ISORating = ISORatings.Good;
+                }
+                else if (value > 0 && value < 1500)
+                {
+                    ISORating = ISORatings.Acceptable;
+                }
+                else if (value > 0 && value >= 1500)
+                {
+                    ISORating = ISORatings.Noisey;
+                }
+                else
+                {
+                    ISORating = ISORatings.NotDefined;
+                }
+            }
+        }
 
         public bool Flash { get; set; }
 
@@ -48,7 +71,12 @@ namespace PicDB.ViewModels
 
         public ICameraViewModel Camera { get; set; }
 
-        public ISORatings ISORating { get; set; }
+        private ISORatings _ISORating;
+        public ISORatings ISORating
+        {
+            get => _ISORating;
+            set => _ISORating = value;
+        }
 
         public string ISORatingResource { get; set; }
     }
