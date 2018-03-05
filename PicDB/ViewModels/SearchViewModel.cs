@@ -9,10 +9,19 @@ namespace PicDB.ViewModels
 {
     class SearchViewModel : ISearchViewModel
     {
-        public string SearchText { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private string _SearchText;
+        public string SearchText
+        {
+            get => _SearchText;
+            set
+            {
+                _SearchText = value;
+                IsActive = String.IsNullOrWhiteSpace(_SearchText) ? false : true;
+            }
+        }
 
-        public bool IsActive => throw new NotImplementedException();
+        public bool IsActive { get; set; }
 
-        public int ResultCount => throw new NotImplementedException();
+        public int ResultCount { get; set; }
     }
 }

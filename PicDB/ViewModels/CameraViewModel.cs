@@ -3,33 +3,46 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BIF.SWE2.Interfaces;
+using BIF.SWE2.Interfaces.Models;
 using BIF.SWE2.Interfaces.ViewModels;
+using PicDB.Models;
 
 namespace PicDB.ViewModels
 {
     class CameraViewModel : ICameraViewModel
     {
-        public int ID => throw new NotImplementedException();
+        public CameraViewModel(ICameraModel model)
+        {
+            Producer = model.Producer;
+            Make = model.Make;
+            
+        }
 
-        public string Producer { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string Make { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public DateTime? BoughtOn { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string Notes { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public CameraViewModel()
+        {
+        }
 
-        public int NumberOfPictures => throw new NotImplementedException();
+        public int ID { get; set; }
 
-        public bool IsValid => throw new NotImplementedException();
+        public string Producer { get; set; }
+        public string Make { get; set; }
+        public DateTime? BoughtOn { get; set; }
+        public string Notes { get; set; }
 
-        public string ValidationSummary => throw new NotImplementedException();
+        public int NumberOfPictures { get; set; }
 
-        public bool IsValidProducer => throw new NotImplementedException();
+        public bool IsValid { get; set; }
 
-        public bool IsValidMake => throw new NotImplementedException();
+        public string ValidationSummary { get; set; }
 
-        public bool IsValidBoughtOn => throw new NotImplementedException();
+        public bool IsValidProducer { get; set; }
 
-        public decimal ISOLimitGood { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public decimal ISOLimitAcceptable { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public bool IsValidMake { get; set; }
+
+        public bool IsValidBoughtOn { get; set; }
+
+        public decimal ISOLimitGood { get; set; }
+        public decimal ISOLimitAcceptable { get; set; }
 
         public ISORatings TranslateISORating(decimal iso)
         {

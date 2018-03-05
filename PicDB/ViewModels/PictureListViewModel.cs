@@ -9,18 +9,18 @@ namespace PicDB.ViewModels
 {
     class PictureListViewModel : IPictureListViewModel
     {
-        public IPictureViewModel CurrentPicture => throw new NotImplementedException();
+        public IPictureViewModel CurrentPicture { get; set; }
 
-        public IEnumerable<IPictureViewModel> List => throw new NotImplementedException();
+        public IEnumerable<IPictureViewModel> List { get; set; }
 
-        public IEnumerable<IPictureViewModel> PrevPictures => throw new NotImplementedException();
+        public IEnumerable<IPictureViewModel> PrevPictures { get; set; }
 
-        public IEnumerable<IPictureViewModel> NextPictures => throw new NotImplementedException();
+        public IEnumerable<IPictureViewModel> NextPictures { get; set; }
 
-        public int Count => throw new NotImplementedException();
+        public int Count { get; set; }
 
-        public int CurrentIndex => throw new NotImplementedException();
+        public int CurrentIndex { get; set; }
 
-        public string CurrentPictureAsString => throw new NotImplementedException();
+        public string CurrentPictureAsString { get; set; }
     }
 }

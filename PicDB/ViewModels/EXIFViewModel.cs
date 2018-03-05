@@ -4,29 +4,52 @@ using System.Linq;
 using System.Text;
 using BIF.SWE2.Interfaces;
 using BIF.SWE2.Interfaces.ViewModels;
+using PicDB.Models;
 
 namespace PicDB.ViewModels
 {
     class EXIFViewModel : IEXIFViewModel
     {
-        public string Make => throw new NotImplementedException();
+        public EXIFViewModel()
+        {
 
-        public decimal FNumber => throw new NotImplementedException();
+        }
 
-        public decimal ExposureTime => throw new NotImplementedException();
+        public EXIFViewModel(EXIFModel model)
+        {
+            if(model != null)
+            {
+                Make = model.Make;
+                FNumber = model.FNumber;
+                ExposureTime = model.ExposureTime;
+                ISOValue = model.ISOValue;
+                Flash = model.Flash;
+                ExposureProgram = model.ExposureProgram.ToString();
+                ExposureProgramResource = model.ExposureProgram.ToString();
+                Camera = new CameraViewModel();
+                ISORating = new ISORatings();
+                ISORatingResource = model.ISOValue.ToString();
+            }
+        }
 
-        public decimal ISOValue => throw new NotImplementedException();
+        public string Make { get; set; }
 
-        public bool Flash => throw new NotImplementedException();
+        public decimal FNumber { get; set; }
 
-        public string ExposureProgram => throw new NotImplementedException();
+        public decimal ExposureTime { get; set; }
 
-        public string ExposureProgramResource => throw new NotImplementedException();
+        public decimal ISOValue { get; set; }
 
-        public ICameraViewModel Camera { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public bool Flash { get; set; }
 
-        public ISORatings ISORating => throw new NotImplementedException();
+        public string ExposureProgram { get; set; }
 
-        public string ISORatingResource => throw new NotImplementedException();
+        public string ExposureProgramResource { get; set; }
+
+        public ICameraViewModel Camera { get; set; }
+
+        public ISORatings ISORating { get; set; }
+
+        public string ISORatingResource { get; set; }
     }
 }

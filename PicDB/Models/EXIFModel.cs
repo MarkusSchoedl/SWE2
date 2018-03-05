@@ -9,11 +9,11 @@ namespace PicDB.Models
 {
     class EXIFModel : IEXIFModel
     {
-        public string Make { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public decimal FNumber { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public decimal ExposureTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public decimal ISOValue { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public bool Flash { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public ExposurePrograms ExposureProgram { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string Make { get; set; }
+        public decimal FNumber { get; set; }
+        public decimal ExposureTime { get; set; }
+        public decimal ISOValue { get; set; }
+        public bool Flash { get; set; }
+        public ExposurePrograms ExposureProgram { get; set; }
     }
 }

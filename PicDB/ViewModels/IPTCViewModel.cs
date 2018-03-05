@@ -4,18 +4,36 @@ using System.Linq;
 using System.Text;
 
 using BIF.SWE2.Interfaces.ViewModels;
+using PicDB.Models;
 
 namespace PicDB.ViewModels
 {
     class IPTCViewModel : IIPTCViewModel
     {
-        public string Keywords { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string ByLine { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string CopyrightNotice { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public IPTCViewModel()
+        {
 
-        public IEnumerable<string> CopyrightNotices => throw new NotImplementedException();
+        }
+        public IPTCViewModel(IPTCModel model)
+        {
+            if (model != null)
+            {
+                ByLine = model.ByLine;
+                Headline = model.Headline;
+                Caption = model.Caption;
+                Keywords = model.Keywords;
+                CopyrightNotices = model.CopyrightNotice.Split(',');
+                CopyrightNotice = model.CopyrightNotice;
+            }
+        }
 
-        public string Headline { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string Caption { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string Keywords{ get; set; }
+        public string ByLine{ get; set; }
+        public string CopyrightNotice{ get; set; }
+
+        public IEnumerable<string> CopyrightNotices { get; set; }
+
+        public string Headline{ get; set; }
+        public string Caption{ get; set; }
     }
 }

@@ -9,10 +9,10 @@ namespace PicDB.Models
 {
     class PhotographerModel : IPhotographerModel
     {
-        public int ID { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string FirstName { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string LastName { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public DateTime? BirthDay { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string Notes { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public int ID { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public DateTime? BirthDay { get; set; }
+        public string Notes { get; set; }
     }
 }

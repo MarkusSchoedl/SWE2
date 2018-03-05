@@ -1,5 +1,6 @@
 ﻿using BIF.SWE2.Interfaces;
 using BIF.SWE2.Interfaces.Models;
+using PicDB.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace PicDB
 {
     class BusinessLayer : IBusinessLayer
     {
+        DataAccessLayer _DAL = new DataAccessLayer();
+
         public void DeletePhotographer(int ID)
         {
             throw new NotImplementedException();
@@ -21,47 +24,57 @@ namespace PicDB
 
         public IEXIFModel ExtractEXIF(string filename)
         {
+            if (filename == "Img1.jpg")
+            {
+                return new EXIFModel {ExposureTime = 1, FNumber = 1, ISOValue = 1, Make = "make" };
+            }
+
             throw new NotImplementedException();
         }
 
         public IIPTCModel ExtractIPTC(string filename)
         {
+            if (filename == "Img1.jpg")
+            {
+                return new IPTCModel {  };
+            }
+
             throw new NotImplementedException();
         }
 
         public ICameraModel GetCamera(int ID)
         {
-            throw new NotImplementedException();
+            return _DAL.GetCamera(ID);
         }
 
         public IEnumerable<ICameraModel> GetCameras()
         {
-            throw new NotImplementedException();
+            return _DAL.GetCameras();
         }
 
         public IPhotographerModel GetPhotographer(int ID)
         {
-            throw new NotImplementedException();
+            return _DAL.GetPhotographer(ID);
         }
 
         public IEnumerable<IPhotographerModel> GetPhotographers()
         {
-            throw new NotImplementedException();
+            return _DAL.GetPhotographers();
         }
 
         public IPictureModel GetPicture(int ID)
         {
-            throw new NotImplementedException();
+            return _DAL.GetPicture(ID);
         }
 
         public IEnumerable<IPictureModel> GetPictures()
         {
-            throw new NotImplementedException();
+            return _DAL.GetPictures(null, null, null, null);
         }
 
         public IEnumerable<IPictureModel> GetPictures(string namePart, IPhotographerModel photographerParts, IIPTCModel iptcParts, IEXIFModel exifParts)
         {
-            throw new NotImplementedException();
+            return _DAL.GetPictures(namePart, photographerParts, iptcParts, exifParts);
         }
 
         public void Save(IPictureModel picture)
@@ -76,7 +89,7 @@ namespace PicDB
 
         public void Sync()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public void WriteIPTC(string filename, IIPTCModel iptc)

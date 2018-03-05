@@ -9,10 +9,10 @@ namespace PicDB.Models
 {
     class IPTCModel : IIPTCModel
     {
-        public string Keywords { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string ByLine { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string CopyrightNotice { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string Headline { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string Caption { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string Keywords{ get; set; }
+        public string ByLine{ get; set; }
+        public string CopyrightNotice{ get; set; }
+        public string Headline{ get; set; }
+        public string Caption{ get; set; }
     }
 }

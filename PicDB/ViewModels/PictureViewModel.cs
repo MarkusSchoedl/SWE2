@@ -4,25 +4,49 @@ using System.Linq;
 using System.Text;
 
 using BIF.SWE2.Interfaces.ViewModels;
+using PicDB.Models;
 
 namespace PicDB.ViewModels
 {
     class PictureViewModel : IPictureViewModel
     {
-        public int ID => throw new NotImplementedException();
+        #region Constructor
+        public PictureViewModel()
+        {
+        }
 
-        public string FileName => throw new NotImplementedException();
+        public PictureViewModel(PictureModel model)
+        {
+            ID = model.ID;
+            
+            IPTC = new IPTCViewModel();
+            EXIF = new EXIFViewModel();
+            Camera = new CameraViewModel();
 
-        public string FilePath => throw new NotImplementedException();
+            FileName = model.FileName;
+        }
+        #endregion
 
-        public string DisplayName => throw new NotImplementedException();
+        public int ID { get; set; }
 
-        public IIPTCViewModel IPTC => throw new NotImplementedException();
+        public string FileName { get; set; }
 
-        public IEXIFViewModel EXIF => throw new NotImplementedException();
+        public string FilePath { get; set; }
 
-        public IPhotographerViewModel Photographer => throw new NotImplementedException();
+        public string DisplayName
+        {
+            get
+            {
+                return FileName + " (by " + Photographer?.LastName + ")";
+            }
+        }
 
-        public ICameraViewModel Camera => throw new NotImplementedException();
+        public IIPTCViewModel IPTC { get; set; }
+
+        public IEXIFViewModel EXIF { get; set; }
+
+        public IPhotographerViewModel Photographer { get; set; }
+
+        public ICameraViewModel Camera { get; set; }
     }
 }
