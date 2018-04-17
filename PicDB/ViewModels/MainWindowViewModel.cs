@@ -7,12 +7,29 @@ using BIF.SWE2.Interfaces.ViewModels;
 
 namespace PicDB.ViewModels
 {
-    class MainWindowViewModel : IMainWindowViewModel
+    class MainWindowViewModel : ViewModel, IMainWindowViewModel
     {
-        public IPictureViewModel CurrentPicture => new PictureViewModel();
+        private static BusinessLayer _bl = BusinessLayer.GetInstance();
 
-        public IPictureListViewModel List => new PictureListViewModel();
+        private IPictureViewModel _currentPicture = new PictureViewModel(_bl.GetPicture(0));
+        private readonly IPictureListViewModel _list = new PictureListViewModel();
+        private readonly ISearchViewModel _search = new SearchViewModel();
 
-        public ISearchViewModel Search => new SearchViewModel();
+        public IPictureViewModel CurrentPicture
+        {
+            get { return _currentPicture; }
+            set
+            {
+                if (_currentPicture != value)
+                {
+                    _currentPicture = value;
+                    OnPropertyChanged("CurrentPicture");
+                }
+
+            }
+        }
+
+        public IPictureListViewModel List => _list;
+        public ISearchViewModel Search => _search;
     }
 }

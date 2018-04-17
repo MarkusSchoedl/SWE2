@@ -25,12 +25,12 @@ namespace Uebungen
 
         public IDataAccessLayer GetAnyDataAccessLayer()
         {
-            return new DataAccessLayer();
+            return new MockDataAccessLayer();
         }
 
         public IBusinessLayer GetBusinessLayer()
         {
-            return new BusinessLayer();
+            return MockBusinessLayer.GetInstance();
         }
 
         public IEXIFModel GetEmptyEXIFModel()
@@ -55,7 +55,7 @@ namespace Uebungen
 
         public IMainWindowViewModel GetEmptyMainWindowViewModel()
         {
-            return new MainWindowViewModel();
+            return new MockMainWindowViewModel();
         }
 
         public IPhotographerListViewModel GetEmptyPhotographerListViewModel()

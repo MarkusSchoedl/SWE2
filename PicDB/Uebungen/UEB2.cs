@@ -19,12 +19,12 @@ namespace Uebungen
 
         public IBusinessLayer GetBusinessLayer()
         {
-            return new BusinessLayer();
+            return MockBusinessLayer.GetInstance();
         }
 
         public IMainWindowViewModel GetMainWindowViewModel()
         {
-            return new MainWindowViewModel();
+            return new MockMainWindowViewModel();
         }
 
         public IPictureModel GetPictureModel(string filename)

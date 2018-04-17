@@ -17,7 +17,7 @@ namespace Uebungen
 
         public IBusinessLayer GetBusinessLayer()
         {
-            return new BusinessLayer();
+            return MockBusinessLayer.GetInstance();
         }
 
         public void TestSetup(string picturePath)
@@ -27,7 +27,7 @@ namespace Uebungen
 
         public IDataAccessLayer GetDataAccessLayer()
         {
-            return new DataAccessLayer();
+            return new MockDataAccessLayer();
         }
 
         public ISearchViewModel GetSearchViewModel()

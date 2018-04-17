@@ -28,20 +28,20 @@ namespace PicDB.ViewModels
         private int _ID;
         public int ID { get => _ID; }
 
-        private string _FirstName;
-        public string FirstName { get => _FirstName; set => _FirstName = value; }
+        private string _firstName;
+        public string FirstName { get => _firstName; set => _firstName = value; }
 
-        private string _LastName;
-        public string LastName { get => _LastName; set => _LastName = value; }
+        private string _lastName;
+        public string LastName { get => _lastName; set => _lastName = value; }
 
-        private DateTime? _BirthDay;
-        public DateTime? BirthDay { get => _BirthDay; set => _BirthDay = value; }
+        private DateTime? _birthDay;
+        public DateTime? BirthDay { get => _birthDay; set => _birthDay = value; }
 
-        private string _Notes;
-        public string Notes { get => _Notes; set => _Notes = value; }
+        private string _notes;
+        public string Notes { get => _notes; set => _notes = value; }
 
-        private int _NumberOfPictures;
-        public int NumberOfPictures { get => _NumberOfPictures; }
+        private int _numberOfPictures;
+        public int NumberOfPictures { get => _numberOfPictures; }
 
         public bool IsValid => IsValidBirthDay && IsValidLastName;
         
@@ -65,8 +65,8 @@ namespace PicDB.ViewModels
             }
         }
 
-        public bool IsValidLastName => !String.IsNullOrEmpty(_LastName);
+        public bool IsValidLastName => !String.IsNullOrEmpty(_lastName);
 
-        public bool IsValidBirthDay => BirthDay == null ? true : DateTime.Today > BirthDay;
+        public bool IsValidBirthDay => BirthDay == null || DateTime.Today > BirthDay;
     }
 }

@@ -26,21 +26,21 @@ namespace PicDB.Models
         {
         }
 
-        private int _ID;
-        private string _Producer;
-        private string _Make;
-        private DateTime? _BoughtOn;
-        private string _Notes;
-        private decimal _ISOLimitGood;
-        private decimal _ISOLimitAcceptable;
+        private int _id;
+        private string _producer;
+        private string _make;
+        private DateTime? _boughtOn;
+        private string _notes;
+        private decimal _isoLimitGood;
+        private decimal _isoLimitAcceptable;
 
 
-        public int ID { get => _ID; set => _ID = value; }
-        public string Producer { get => _Producer; set => _Producer = value; }
-        public string Make { get => _Make; set => _Make = value; }
-        public DateTime? BoughtOn { get => _BoughtOn; set => _BoughtOn = value; }
-        public string Notes { get => _Notes; set => _Notes = value; }
-        public decimal ISOLimitGood { get => _ISOLimitGood; set => _ISOLimitGood = value; }
-        public decimal ISOLimitAcceptable { get => _ISOLimitAcceptable; set => _ISOLimitAcceptable = value; }
+        public int ID { get => _id; set => _id = value; }
+        public string Producer { get => _producer; set => _producer = value; }
+        public string Make { get => _make; set => _make = value; }
+        public DateTime? BoughtOn { get => _boughtOn; set => _boughtOn = value; }
+        public string Notes { get => _notes; set => _notes = value; }
+        public decimal ISOLimitGood { get => _isoLimitGood; set => _isoLimitGood = value; }
+        public decimal ISOLimitAcceptable { get => _isoLimitAcceptable; set => _isoLimitAcceptable = value; }
     }
 }

@@ -10,7 +10,25 @@ namespace PicDB
 {
     class BusinessLayer : IBusinessLayer
     {
-        DataAccessLayer _DAL = new DataAccessLayer();
+        #region Singleton
+        protected static BusinessLayer _instance;
+
+        private BusinessLayer()
+        {
+            Sync();
+        }
+
+        public static BusinessLayer GetInstance()
+        {
+            if (_instance == null)
+            {
+                _instance = new BusinessLayer();
+            }
+            return _instance;
+        }
+        #endregion
+
+        private DataAccessLayer _dal = new DataAccessLayer();
 
         public void DeletePhotographer(int ID)
         {
@@ -26,7 +44,7 @@ namespace PicDB
         {
             if (filename == "Img1.jpg")
             {
-                return new EXIFModel { ExposureTime = 1, FNumber = 1, ISOValue = 1, Make = "make" };
+                return new EXIFModel {ExposureTime = 1, FNumber = 1, ISOValue = 1, Make = "make"};
             }
 
             throw new NotImplementedException();
@@ -36,7 +54,14 @@ namespace PicDB
         {
             if (filename == "Img1.jpg")
             {
-                return new IPTCModel { ByLine = "byline", Caption = "caption", CopyrightNotice = "copyright", Headline = "headline", Keywords = "keywords" };
+                return new IPTCModel
+                {
+                    ByLine = "byline",
+                    Caption = "caption",
+                    CopyrightNotice = "copyright",
+                    Headline = "headline",
+                    Keywords = "keywords"
+                };
             }
 
             throw new NotImplementedException();
@@ -44,51 +69,54 @@ namespace PicDB
 
         public ICameraModel GetCamera(int ID)
         {
-            return _DAL.GetCamera(ID);
+            return _dal.GetCamera(ID);
         }
 
         public IEnumerable<ICameraModel> GetCameras()
         {
-            return _DAL.GetCameras();
+            return _dal.GetCameras();
         }
 
         public IPhotographerModel GetPhotographer(int ID)
         {
-            return _DAL.GetPhotographer(ID);
+            return _dal.GetPhotographer(ID);
         }
 
         public IEnumerable<IPhotographerModel> GetPhotographers()
         {
-            return _DAL.GetPhotographers();
+            return _dal.GetPhotographers();
         }
 
         public IPictureModel GetPicture(int ID)
         {
-            return _DAL.GetPicture(ID);
+            return _dal.GetPicture(ID);
         }
 
         public IEnumerable<IPictureModel> GetPictures()
         {
-            return _DAL.GetPictures(null, null, null, null);
+            return _dal.GetPictures();
         }
 
-        public IEnumerable<IPictureModel> GetPictures(string namePart, IPhotographerModel photographerParts, IIPTCModel iptcParts, IEXIFModel exifParts)
+        public IEnumerable<IPictureModel> GetPictures(string namePart, IPhotographerModel photographerParts,
+            IIPTCModel iptcParts, IEXIFModel exifParts)
         {
-            return _DAL.GetPictures(namePart, photographerParts, iptcParts, exifParts);
+            return _dal.GetPictures(namePart, photographerParts, iptcParts, exifParts);
         }
 
         public void Save(IPictureModel picture)
         {
-            _DAL.Save(picture);
+            _dal.Save(picture);
         }
 
         public void Save(IPhotographerModel photographer)
         {
-            _DAL.Save(photographer);
+            _dal.Save(photographer);
         }
 
         public void Sync()
         {
+            _dal.SyncPictures();
+
             //throw new NotImplementedException();
         }
 

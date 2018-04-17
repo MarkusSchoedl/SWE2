@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
-
+using BIF.SWE2.Interfaces.Models;
 using BIF.SWE2.Interfaces.ViewModels;
 using PicDB.Models;
+using PicDB.Properties;
 
 namespace PicDB.ViewModels
 {
@@ -15,7 +18,7 @@ namespace PicDB.ViewModels
         {
         }
 
-        public PictureViewModel(PictureModel model)
+        public PictureViewModel(IPictureModel model)
         {
             ID = model.ID;
             
@@ -24,8 +27,16 @@ namespace PicDB.ViewModels
             Camera = new CameraViewModel();
 
             FileName = model.FileName;
+
+            FilePath = Path.Combine(Directory.GetCurrentDirectory(), Resources.PictureFolder, FileName);
         }
         #endregion
+
+        public void ApplyChanges(IPictureModel mdl)
+        {
+            // Copy variables to model again
+            throw new NotImplementedException();
+        }
 
         public int ID { get; set; }
 
@@ -33,13 +44,7 @@ namespace PicDB.ViewModels
 
         public string FilePath { get; set; }
 
-        public string DisplayName
-        {
-            get
-            {
-                return FileName + " (by " + Photographer?.LastName + ")";
-            }
-        }
+        public string DisplayName => FileName + " (by " + Photographer?.LastName + ")";
 
         public IIPTCViewModel IPTC { get; set; }
 

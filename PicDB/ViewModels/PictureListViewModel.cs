@@ -7,11 +7,28 @@ using BIF.SWE2.Interfaces.ViewModels;
 
 namespace PicDB.ViewModels
 {
-    class PictureListViewModel : IPictureListViewModel
+    class PictureListViewModel : ViewModel, IPictureListViewModel
     {
+        public PictureListViewModel()
+        {
+            var pics = BusinessLayer.GetInstance().GetPictures().ToList();
+
+            pics.ForEach(x => _list.Add(new PictureViewModel(x)));
+        }
+
+        private List<PictureViewModel> _list = new List<PictureViewModel>();
+
         public IPictureViewModel CurrentPicture { get; set; }
 
-        public IEnumerable<IPictureViewModel> List { get; set; }
+        public IEnumerable<IPictureViewModel> List
+        {
+            get => _list;
+            set
+            {
+                _list = (List<PictureViewModel>)value;
+                OnPropertyChanged("List");
+            }
+        }
 
         public IEnumerable<IPictureViewModel> PrevPictures { get; set; }
 

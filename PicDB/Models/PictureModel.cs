@@ -13,9 +13,6 @@ namespace PicDB.Models
         public PictureModel(string filename)
         {
             FileName = filename;
-
-            //IPTC = new IPTCModel();
-            //EXIF = new EXIFModel();
         }
         public PictureModel()
         {
