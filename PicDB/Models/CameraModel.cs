@@ -3,10 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BIF.SWE2.Interfaces.ViewModels;
 
 namespace PicDB.Models
 {
-    class CameraModel : ICameraModel
+    public class CameraModel : ICameraModel
     {
         /// <summary>
         /// 
@@ -26,21 +27,29 @@ namespace PicDB.Models
         {
         }
 
-        private int _id;
-        private string _producer;
-        private string _make;
-        private DateTime? _boughtOn;
-        private string _notes;
-        private decimal _isoLimitGood;
-        private decimal _isoLimitAcceptable;
+        public int ID { get; set; }
 
+        public string Producer { get; set; }
 
-        public int ID { get => _id; set => _id = value; }
-        public string Producer { get => _producer; set => _producer = value; }
-        public string Make { get => _make; set => _make = value; }
-        public DateTime? BoughtOn { get => _boughtOn; set => _boughtOn = value; }
-        public string Notes { get => _notes; set => _notes = value; }
-        public decimal ISOLimitGood { get => _isoLimitGood; set => _isoLimitGood = value; }
-        public decimal ISOLimitAcceptable { get => _isoLimitAcceptable; set => _isoLimitAcceptable = value; }
+        public string Make { get; set; }
+
+        public DateTime? BoughtOn { get; set; }
+
+        public string Notes { get; set; }
+
+        public decimal ISOLimitGood { get; set; }
+
+        public decimal ISOLimitAcceptable { get; set; }
+
+        public void ApplyChanges(ICameraViewModel vmdl)
+        {
+            ID = vmdl.ID;
+            Producer = vmdl.Producer;
+            Make = vmdl.Make;
+            BoughtOn = vmdl.BoughtOn;
+            Notes = vmdl.Notes;
+            ISOLimitGood = vmdl.ISOLimitGood;
+            ISOLimitAcceptable = vmdl.ISOLimitAcceptable;
+        }
     }
 }

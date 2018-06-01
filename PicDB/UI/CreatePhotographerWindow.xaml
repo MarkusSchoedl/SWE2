@@ -1,0 +1,109 @@
+﻿<Window x:Class="PicDB.CreatePhotographerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:self="clr-namespace:PicDB"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
+        Title="Create Photographer" Height="240" Width="250" ResizeMode="NoResize">
+
+
+    <Grid Margin="10">
+        <Grid>
+            <Grid.Resources >
+                <Style TargetType="DatePicker" >
+                    <Setter Property="Margin" Value="0,3,0,3" />
+                </Style>
+                <Style TargetType="TextBox" >
+                    <Setter Property="Margin" Value="0,3,0,3" />
+                </Style>
+            </Grid.Resources>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="50" />
+            </Grid.RowDefinitions>
+
+            <!-- TextBlocks -->
+            <Label Grid.Column="0" Grid.Row="0">First Name</Label>
+            <TextBox Name="TextBoxFirstName" Grid.Column="1" Grid.Row="0">
+                <TextBox.Text>
+                    <Binding Path="Photographer.FirstName" UpdateSourceTrigger="PropertyChanged" >
+                        <Binding.ValidationRules>
+                            <self:TextBoxNotEmptyValidationRule ValidatesOnTargetUpdated="True"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+
+            <Label Grid.Column="0" Grid.Row="1">Last Name</Label>
+            <TextBox Name="TextBoxLastName" Grid.Row="1" Grid.Column="1">
+                <TextBox.Text>
+                    <Binding Path="Photographer.LastName" UpdateSourceTrigger="PropertyChanged" >
+                        <Binding.ValidationRules>
+                            <self:TextBoxNotEmptyValidationRule ValidatesOnTargetUpdated="True"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+
+            <Label Grid.Column="0" Grid.Row="2">Notes</Label>
+            <DatePicker Name="DatePickerBirthDay" Grid.Row="2" Grid.Column="1">
+                <DatePicker.SelectedDate>
+                    <Binding Path="Photographer.BirthDay" UpdateSourceTrigger="PropertyChanged" >
+                        <Binding.ValidationRules>
+                            <self:AgeValidationRule ValidatesOnTargetUpdated="True"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </DatePicker.SelectedDate>
+            </DatePicker>
+
+            <Label Grid.Column="0" Grid.Row="3">Notes</Label>
+            <TextBox Name="TextBoxNotes" Grid.Row="3" Grid.Column="1">
+                <TextBox.Text>
+                    <Binding Path="Photographer.Notes" UpdateSourceTrigger="PropertyChanged" >
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+
+            <!-- Validation List -->
+            <StackPanel Grid.Row="3">
+                <StackPanel.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Foreground" Value="Red" />
+                    </Style>
+                </StackPanel.Resources>
+            </StackPanel>
+
+            <Label Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Foreground="DarkGray">
+                <AccessText TextWrapping="Wrap" >
+                   * Attention: The Photographer has to be at least 12 years old.
+                </AccessText>
+            </Label>
+
+            <!--<Label Grid.Row="4" Grid.ColumnSpan="2">Attention: The Photographer has to be at least 12 years old.</Label>-->
+        </Grid>
+
+        <Button Content="Submit" VerticalAlignment="Bottom" Command="{Binding SavePhotographer}">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="IsEnabled" Value="false" />
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ElementName=TextBoxFirstName, Path=(Validation.HasError)}" Value="false" />
+                                <Condition Binding="{Binding ElementName=TextBoxLastName, Path=(Validation.HasError)}" Value="false" />
+                                <Condition Binding="{Binding ElementName=DatePickerBirthDay, Path=(Validation.HasError)}" Value="false" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="IsEnabled" Value="true" />
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+    </Grid>
+</Window>

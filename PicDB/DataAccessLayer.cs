@@ -5,10 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using MetadataExtractor;
+using MetadataExtractor.Formats.Exif;
 using PicDB.Properties;
+using Directory = System.IO.Directory;
 
 namespace PicDB
 {
@@ -33,6 +37,68 @@ namespace PicDB
         }
 
         #region Camera
+        public void Save(ICameraModel camera)
+        {
+            if (camera.ID != 0)
+            {
+                Update(camera);
+            }
+
+            else
+            {
+                Insert(camera);
+            }
+        }
+
+        private void Insert(ICameraModel camera)
+        {
+            using (var db = new SqlConnection(Resources.DBConnectionString))
+            {
+                Open(db);
+
+                string sql = "INSERT INTO Camera (Producer, Make, BoughtOn, Notes, ISOLimitGood, ISOLimitAcceptable) VALUES(@Producer, @Make, @BoughtOn, @Notes, @ISOLimitGood, @ISOLimitAcceptable); SELECT @@IDENTITY;";
+
+                SqlCommand cmd = new SqlCommand(sql, db);
+
+                cmd.Parameters.AddWithValue("@Producer", camera.Producer);
+                cmd.Parameters.AddWithValue("@Make", camera.Make);
+                cmd.Parameters.AddWithValue("@BoughtOn", camera.BoughtOn);
+                cmd.Parameters.AddWithValue("@Notes", camera.Notes);
+                cmd.Parameters.AddWithValue("@ISOLimitGood", camera.ISOLimitGood);
+                cmd.Parameters.AddWithValue("@ISOLimitAcceptable", camera.ISOLimitAcceptable);
+
+                int insId = (int)(decimal)cmd.ExecuteScalar();
+                camera.ID = insId;
+
+                db.Close();
+            }
+        }
+
+        private void Update(ICameraModel camera)
+        {
+            using (var db = new SqlConnection(Resources.DBConnectionString))
+            {
+                Open(db);
+
+                string sql = "UPDATE Camera SET Producer = @Producer, Make = @Make, BoughtOn = @BoughtOn, Notes = @Notes, ISOLimitGood = @ISOLimitGood, ISOLimitAcceptable = @ISOLimitAcceptable WHERE ID = @ID; SELECT @@IDENTITY;";
+
+                SqlCommand cmd = new SqlCommand(sql, db);
+
+                cmd.Parameters.AddWithValue("@ID", camera.ID);
+                cmd.Parameters.AddWithValue("@Producer", camera.Producer);
+                cmd.Parameters.AddWithValue("@Make", camera.Make);
+                cmd.Parameters.AddWithValue("@BoughtOn", camera.BoughtOn);
+                cmd.Parameters.AddWithValue("@Notes", camera.Notes);
+                cmd.Parameters.AddWithValue("@ISOLimitGood", camera.ISOLimitGood);
+                cmd.Parameters.AddWithValue("@ISOLimitAcceptable", camera.ISOLimitAcceptable);
+
+                int insId = (int)(decimal)cmd.ExecuteScalar();
+                camera.ID = insId;
+
+                db.Close();
+            }
+        }
+
         public ICameraModel GetCamera(int id)
         {
             var camera = new CameraModel
@@ -117,6 +183,23 @@ namespace PicDB
 
             //return _Cameras;
         }
+
+        private void UpdateCamera(IPictureModel picture)
+        {
+            using (var db = new SqlConnection(Resources.DBConnectionString))
+            {
+                Open(db);
+
+                SqlCommand cmd = new SqlCommand("UPDATE Picture SET fk_Camera_ID = @fk_Camera_ID WHERE ID = @ID;", db);
+
+                cmd.Parameters.AddWithValue("@ID", picture.ID);
+                cmd.Parameters.AddWithValue("@fk_Camera_ID", picture.Camera.ID);
+
+                cmd.ExecuteScalar();
+
+                db.Close();
+            }
+        }
         #endregion 
 
         #region Picture
@@ -130,7 +213,7 @@ namespace PicDB
             using (var db = new SqlConnection(Resources.DBConnectionString))
             {
                 Open(db);
-                
+
                 SqlCommand cmd;
 
                 if (id == 0)
@@ -146,7 +229,6 @@ namespace PicDB
 
                 SqlDataReader reader = cmd.ExecuteReader();
 
-                // Create Photographer
                 if (reader.HasRows)
                 {
                     // Call Read before accessing data.
@@ -159,45 +241,44 @@ namespace PicDB
                     picture.EXIF = GetExif((int)reader[2]);
 
                     // Camera might be null
-                    try
+                    if (reader[3] != DBNull.Value)
                     {
                         picture.Camera = GetCamera((int)reader[3]);
                     }
-                    catch (InvalidCastException)
+                    else
                     {
                         picture.Camera = null;
                     }
                 }
+
+                //else
+                //{
+                //    picture = null;
+                //}
 
                 db.Close();
             }
 
 
             return picture;
-
-            //if (id == 1234)
-            //{
-            //    return new PictureModel { ID = id };
-            //}
-
-            //return _pictures.FirstOrDefault(x => x.ID == id);
         }
 
         public void SyncPictures()
         {
-            var folderPictures = GetPicturesByFolder(Resources.PictureFolder, new[] { "*.jpg", "*.png", "*.jpeg", "*.bmp" });
+            var folderPictures = GetPicturesByFolder(Resources.PictureFolder, new[] { "*.jpg", "*.png", "*.jpeg", "*.bmp" }).ToArray();
             List<PictureModel> dbPictures = (List<PictureModel>)GetPictures();
 
             //Insert new pics to DB
             foreach (string pic in folderPictures)
             {
-                if (dbPictures.All(x => x.FileName != pic))
+                var picName = pic.Split('/', '\\').Last();
+                if (dbPictures.All(x => x.FileName != picName))
                 {
                     PictureModel model = new PictureModel();
                     model.ID = 0;
-                    model.FileName = pic.Split('/', '\\').Last();
-                    model.IPTC = new IPTCModel();
-                    model.EXIF = new EXIFModel();
+                    model.FileName = picName;
+                    model.IPTC = ReadIPTC(pic);
+                    model.EXIF = ReadEXIF(pic);
                     model.Camera = null;
 
                     Save(model);
@@ -207,7 +288,7 @@ namespace PicDB
             //Remove deleted pictures in DB
             foreach (var pic in dbPictures)
             {
-                if (!folderPictures.Contains(pic.FileName))
+                if (!folderPictures.Contains(Path.Combine(Resources.PictureFolder, pic.FileName)))
                 {
                     DeletePicture(pic.ID);
                 }
@@ -273,6 +354,34 @@ namespace PicDB
             return Pics;
         }
 
+        private int GetPictureId(string picName)
+        {
+            int picId = 0;
+
+            using (var db = new SqlConnection(Resources.DBConnectionString))
+            {
+                Open(db);
+
+                SqlCommand cmd = new SqlCommand("SELECT ID FROM Picture WHERE CONVERT(VARCHAR, FileName) = @FileName;", db);
+
+                cmd.Parameters.AddWithValue("@FileName", picName);
+
+                var reader = cmd.ExecuteReader();
+
+                if (reader.HasRows)
+                {
+                    // Call Read before accessing data.
+                    reader.Read();
+
+                    picId = (int)reader[0];
+                }
+
+                db.Close();
+            }
+
+            return picId;
+        }
+
         public void DeletePicture(int id)
         {
             using (var db = new SqlConnection(Resources.DBConnectionString))
@@ -297,7 +406,10 @@ namespace PicDB
             {
                 Update(picture.ID, picture.IPTC);
                 Update(picture.ID, picture.EXIF);
-                Update(picture);
+                if (picture.Camera != null)
+                {
+                    UpdateCamera(picture);
+                }
             }
 
             else
@@ -326,26 +438,6 @@ namespace PicDB
             }
         }
 
-        private void Update(IPictureModel picture)
-        {
-            using (var db = new SqlConnection(Resources.DBConnectionString))
-            {
-                Open(db);
-
-                SqlCommand cmd = new SqlCommand("UPDATE Picture SET FileName = @FileName, fk_Camera_ID = @fk_Camera_ID, fk_EXIF_ID = @fk_EXIF_ID, fk_IPTC_ID = @fk_IPTC_ID WHERE ID = @ID;", db);
-
-                cmd.Parameters.AddWithValue("@ID", picture.ID);
-                cmd.Parameters.AddWithValue("@FileName", picture.FileName);
-                cmd.Parameters.AddWithValue("@fk_Camera_ID", picture.Camera.ID);
-                cmd.Parameters.AddWithValue("@fk_EXIF_ID", picture.EXIF);
-                cmd.Parameters.AddWithValue("@fk_IPTC_ID", picture.IPTC);
-
-                cmd.ExecuteScalar();
-
-                db.Close();
-            }
-        }
-
         private void Insert(IPictureModel picture, int iptcId, int exifId)
         {
             using (var db = new SqlConnection(Resources.DBConnectionString))
@@ -353,7 +445,7 @@ namespace PicDB
                 Open(db);
 
                 string sql = picture.Camera == null ? "INSERT INTO Picture (FileName, fk_EXIF_ID, fk_IPTC_ID) VALUES(@FileName, @fk_EXIF_ID, @fk_IPTC_ID); SELECT @@IDENTITY;" :
-                    "INSERT INTO Picture (FileName, fk_EXIF_ID, fk_IPTC_ID) VALUES(@FileName, @fk_Camera_ID, @fk_EXIF_ID, @fk_IPTC_ID); SELECT @@IDENTITY;";
+                    "INSERT INTO Picture (FileName, fk_Camera_ID, fk_EXIF_ID, fk_IPTC_ID) VALUES(@FileName, @fk_Camera_ID, @fk_EXIF_ID, @fk_IPTC_ID); SELECT @@IDENTITY;";
 
                 SqlCommand cmd = new SqlCommand(sql, db);
 
@@ -372,9 +464,71 @@ namespace PicDB
         #endregion
 
         #region EXIF & IPTC
+        public void Save(string filename, IIPTCModel mdl)
+        {
+            int picId = GetPictureId(filename);
+
+            Update(picId, mdl);
+        }
+
+        private void GetExifId(int picId, out int exifId)
+        {
+            exifId = 0;
+
+            using (var db = new SqlConnection(Resources.DBConnectionString))
+            {
+                Open(db);
+
+                SqlCommand cmd = new SqlCommand("SELECT fk_EXIF_ID FROM Picture WHERE ID = @ID;", db);
+
+                cmd.Parameters.AddWithValue("@ID", picId);
+
+                var reader = cmd.ExecuteReader();
+
+                if (reader.HasRows)
+                {
+                    // Call Read before accessing data.
+                    reader.Read();
+
+                    exifId = (int)reader[0];
+                }
+
+                db.Close();
+            }
+        }
+
+        private void GetIptcId(int picId, out int iptcId)
+        {
+            iptcId = 0;
+
+            using (var db = new SqlConnection(Resources.DBConnectionString))
+            {
+                Open(db);
+
+                SqlCommand cmd = new SqlCommand("SELECT fk_IPTC_ID FROM Picture WHERE ID = @ID;", db);
+
+                cmd.Parameters.AddWithValue("@ID", picId);
+
+                var reader = cmd.ExecuteReader();
+
+                if (reader.HasRows)
+                {
+                    // Call Read before accessing data.
+                    reader.Read();
+
+                    iptcId = (int)reader[0];
+                }
+
+                db.Close();
+            }
+        }
+
         private IIPTCModel GetIptc(int id)
         {
-            IPTCModel iptc = new IPTCModel();
+            IPTCModel iptc = new IPTCModel()
+            {
+                ID = id
+            };
 
             using (var db = new SqlConnection(Resources.DBConnectionString))
             {
@@ -407,7 +561,10 @@ namespace PicDB
 
         private IEXIFModel GetExif(int id)
         {
-            EXIFModel exif = new EXIFModel();
+            EXIFModel exif = new EXIFModel()
+            {
+                ID = id
+            };
 
             using (var db = new SqlConnection(Resources.DBConnectionString))
             {
@@ -448,7 +605,7 @@ namespace PicDB
 
                 SqlCommand cmd = new SqlCommand("INSERT INTO EXIF (Make, FNumber, ExposureTime, ISOValue, Flash, ExposureProgram) VALUES(@Make, @FNumber, @ExposureTime, @ISOValue, @Flash, @ExposureProgram); SELECT @@IDENTITY;", db);
 
-                cmd.Parameters.AddWithValue("@Make", exif.Make);
+                cmd.Parameters.AddWithValue("@Make", exif.Make ?? "");
                 cmd.Parameters.AddWithValue("@FNumber", exif.FNumber);
                 cmd.Parameters.AddWithValue("@ExposureTime", exif.ExposureTime);
                 cmd.Parameters.AddWithValue("@ISOValue", exif.ISOValue);
@@ -472,10 +629,10 @@ namespace PicDB
                 SqlCommand cmd = new SqlCommand("INSERT INTO dbo.IPTC (Keywords, ByLine, CopyrightNotice, Headline, Caption) VALUES(@Keywords, @ByLine, @CopyrightNotice, @Headline, @Caption); SELECT @@IDENTITY;", db);
 
                 cmd.Parameters.AddWithValue("@Keywords", (object)iptc.Keywords ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@ByLine", iptc.ByLine);
-                cmd.Parameters.AddWithValue("@CopyrightNotice", iptc.CopyrightNotice);
-                cmd.Parameters.AddWithValue("@Headline", iptc.Headline);
-                cmd.Parameters.AddWithValue("@Caption", iptc.Caption);
+                cmd.Parameters.AddWithValue("@ByLine", iptc.ByLine ?? "");
+                cmd.Parameters.AddWithValue("@CopyrightNotice", iptc.CopyrightNotice ?? "");
+                cmd.Parameters.AddWithValue("@Headline", iptc.Headline ?? "");
+                cmd.Parameters.AddWithValue("@Caption", iptc.Caption ?? "");
 
                 int insId = (int)(decimal)cmd.ExecuteScalar();
 
@@ -485,15 +642,17 @@ namespace PicDB
 
         private void Update(int picId, IEXIFModel exif)
         {
+            GetExifId(picId, out var exifId);
+
             using (var db = new SqlConnection(Resources.DBConnectionString))
             {
                 Open(db);
 
                 SqlCommand cmd = new SqlCommand("UPDATE EXIF SET Make=@Make, FNumber = @FNumber, ExposureTime = @ExposureTime, ISOValue = @ISOValue, Flash = @Flash, ExposureProgram = @ExposureProgram WHERE ID = @ID;", db);
 
-                cmd.Parameters.AddWithValue("@ID", picId);
+                cmd.Parameters.AddWithValue("@ID", exifId);
 
-                cmd.Parameters.AddWithValue("@Make", exif.Make);
+                cmd.Parameters.AddWithValue("@Make", exif.Make ?? "");
                 cmd.Parameters.AddWithValue("@FNumber", exif.FNumber);
                 cmd.Parameters.AddWithValue("@ExposureTime", exif.ExposureTime);
                 cmd.Parameters.AddWithValue("@ISOValue", exif.ISOValue);
@@ -508,25 +667,122 @@ namespace PicDB
 
         private void Update(int picId, IIPTCModel iptc)
         {
+            GetIptcId(picId, out var iptcId);
+
             using (var db = new SqlConnection(Resources.DBConnectionString))
             {
                 Open(db);
 
                 SqlCommand cmd = new SqlCommand("UPDATE IPTC SET Keywords = @Keywords, ByLine = @ByLine, CopyrightNotice = @CopyrightNotice, Headline = @Headline, Caption = @Caption WHERE ID = @ID;", db);
 
-                cmd.Parameters.AddWithValue("@ID", picId);
+                cmd.Parameters.AddWithValue("@ID", iptcId);
 
-                cmd.Parameters.AddWithValue("@Keywords", iptc.Keywords);
-                cmd.Parameters.AddWithValue("@ByLine", iptc.ByLine);
-                cmd.Parameters.AddWithValue("@CopyrightNotice", iptc.CopyrightNotice);
-                cmd.Parameters.AddWithValue("@Headline", iptc.Headline);
-                cmd.Parameters.AddWithValue("@Caption", iptc.Caption);
+                cmd.Parameters.AddWithValue("@Keywords", iptc.Keywords ?? "");
+                cmd.Parameters.AddWithValue("@ByLine", iptc.ByLine ?? "");
+                cmd.Parameters.AddWithValue("@CopyrightNotice", iptc.CopyrightNotice ?? "");
+                cmd.Parameters.AddWithValue("@Headline", iptc.Headline ?? "");
+                cmd.Parameters.AddWithValue("@Caption", iptc.Caption ?? "");
 
                 cmd.ExecuteScalar();
 
                 db.Close();
             }
         }
+
+        private IIPTCModel ReadIPTC(string picture)
+        {
+            IIPTCModel mdl = new IPTCModel();
+
+            var directories = ImageMetadataReader.ReadMetadata(picture);
+
+            if (directories.Any(x => x.Name.Contains("IPTC")))
+            {
+                var iptcDir = directories.First(x => x.Name.Contains("IPTC"));
+
+                mdl.ByLine = iptcDir.Tags.FirstOrDefault(tag => tag.Name == "By-line")?.Description ?? "";
+                mdl.Caption = iptcDir.Tags.FirstOrDefault(tag => tag.Name == "Caption")?.Description ??
+                              iptcDir.Tags.FirstOrDefault(tag => tag.Name == "Abstract")?.Description ??
+                              iptcDir.Tags.FirstOrDefault(tag => tag.Name == "Caption/Abstract")?.Description ??
+                              "";
+                mdl.CopyrightNotice = iptcDir.Tags.FirstOrDefault(tag => tag.Name == "Copyright Notice")?.Description ?? "";
+                mdl.Headline = iptcDir.Tags.FirstOrDefault(tag => tag.Name == "Headline")?.Description ?? "";
+                mdl.Keywords = iptcDir.Tags.FirstOrDefault(tag => tag.Name == "Keywords")?.Description ?? "";
+
+                // TODO: Check if IPTC Extraction works correctly 
+            }
+
+            return mdl;
+        }
+
+        private IEXIFModel ReadEXIF(string picture)
+        {
+            IEXIFModel mdl = new EXIFModel();
+
+            var directories = ImageMetadataReader.ReadMetadata(picture);
+
+            mdl.Make = directories.FirstOrDefault(x => x.Name.StartsWith("Exif"))?.Tags.FirstOrDefault(tag => tag.Name == "Make")?.Description ?? "";
+
+            if (directories.Any(x => x.Name.Contains("Exif SubIFD")))
+            {
+                var exifTags = directories.FirstOrDefault(x => x.Name.StartsWith("Exif SubIFD"))?.Tags;
+
+                decimal fLength = decimal.Parse(exifTags.FirstOrDefault(tag => tag.Name == "Focal Length")?.Description.Split(' ').First() ?? "0");
+                mdl.ExposureTime = FractionToDouble(exifTags.FirstOrDefault(tag => tag.Name == "Exposure Time")?.Description.Split(' ').First() ?? "0/1"); //Exif SubIFD
+                mdl.FNumber = fLength / decimal.Parse(exifTags.FirstOrDefault(tag => tag.Name == "F-Number")?.Description.Split('/').Last() ?? "0"); //Exif SubIFD
+                mdl.ExposureProgram = TryParseProgram(exifTags.FirstOrDefault(tag => tag.Name == "Exposure Program")?.Description ?? "");
+                mdl.Flash = !exifTags.FirstOrDefault(tag => tag.Name == "Flash")?.Description.Contains("Flash did not fire") ?? false; //Exif SubIFD
+                mdl.ISOValue = decimal.Parse(exifTags.FirstOrDefault(tag => tag.Name == "ISO Speed Ratings")?.Description ?? "0");
+            }
+
+            return mdl;
+        }
+
+        private ExposurePrograms TryParseProgram(string program)
+        {
+            program = program.Replace(" ", string.Empty);
+
+            if (Enum.TryParse(program, ignoreCase: true, result: out ExposurePrograms value))
+            {
+                return value;
+            }
+
+            return ExposurePrograms.NotDefined;
+        }
+
+        decimal FractionToDouble(string fraction)
+        {
+            decimal result;
+
+            if (decimal.TryParse(fraction, out result))
+            {
+                return result;
+            }
+
+            string[] split = fraction.Split(new char[] { ' ', '/' });
+
+            if (split.Length == 2 || split.Length == 3)
+            {
+                int a, b;
+
+                if (int.TryParse(split[0], out a) && int.TryParse(split[1], out b))
+                {
+                    if (split.Length == 2)
+                    {
+                        return (decimal)a / b;
+                    }
+
+                    int c;
+
+                    if (int.TryParse(split[2], out c))
+                    {
+                        return a + (decimal)b / c;
+                    }
+                }
+            }
+
+            throw new FormatException("Not a valid fraction.");
+        }
+
         #endregion
 
         #region Photographer
@@ -670,14 +926,14 @@ namespace PicDB
             {
                 Open(db);
 
-                SqlCommand cmd = new SqlCommand("INSERT INTO Photographer (FirstName, LastName, BirthDay, Notes) VALUES(@FirstName, @LastName, @BirthDay, @Notes);", db);
+                SqlCommand cmd = new SqlCommand("INSERT INTO Photographer (FirstName, LastName, BirthDay, Notes) VALUES(@FirstName, @LastName, @BirthDay, @Notes); SELECT @@IDENTITY;", db);
 
                 cmd.Parameters.AddWithValue("@FirstName", photographer.FirstName);
                 cmd.Parameters.AddWithValue("@LastName", photographer.LastName);
                 cmd.Parameters.AddWithValue("@BirthDay", photographer.BirthDay);
                 cmd.Parameters.AddWithValue("@Notes", photographer.Notes);
 
-                int insId = (int)cmd.ExecuteScalar();
+                int insId = (int)(decimal)cmd.ExecuteScalar();
                 photographer.ID = insId;
 
                 if (photographer.ID == 0 && photographer.LastName == "Testinger")

@@ -21,22 +21,17 @@ namespace PicDB.ViewModels
         public PictureViewModel(IPictureModel model)
         {
             ID = model.ID;
-            
-            IPTC = new IPTCViewModel();
-            EXIF = new EXIFViewModel();
-            Camera = new CameraViewModel();
+
+            IPTC = new IPTCViewModel((IPTCModel)model.IPTC);
+            EXIF = new EXIFViewModel((EXIFModel)model.EXIF);
+            if (model.Camera != null)
+                Camera = new CameraViewModel((CameraModel)model.Camera);
 
             FileName = model.FileName;
 
-            FilePath = Path.Combine(Directory.GetCurrentDirectory(), Resources.PictureFolder, FileName);
+            FilePath = Path.Combine(Directory.GetCurrentDirectory(), Resources.PictureFolder, FileName ?? "");
         }
         #endregion
-
-        public void ApplyChanges(IPictureModel mdl)
-        {
-            // Copy variables to model again
-            throw new NotImplementedException();
-        }
 
         public int ID { get; set; }
 

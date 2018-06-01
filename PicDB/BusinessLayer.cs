@@ -116,13 +116,16 @@ namespace PicDB
         public void Sync()
         {
             _dal.SyncPictures();
-
-            //throw new NotImplementedException();
         }
 
         public void WriteIPTC(string filename, IIPTCModel iptc)
         {
-            throw new NotImplementedException();
+            _dal.Save(filename, iptc);
+        }
+
+        public void Save(CameraModel newCamera)
+        {
+            Save(newCamera);
         }
     }
 }
