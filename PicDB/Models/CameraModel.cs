@@ -41,6 +41,29 @@ namespace PicDB.Models
 
         public decimal ISOLimitAcceptable { get; set; }
 
+        public string ISOLimitGoodTextConverter
+        {
+            get { return ISOLimitGood <= 0 ? "" : ISOLimitGood.ToString(); }
+            set
+            {
+                if (int.TryParse(value, out int res))
+                {
+                    ISOLimitGood = res;
+                }
+            }
+        }
+        public string ISOLimitAcceptableTextConverter
+        {
+            get { return ISOLimitAcceptable <= 0 ? "" : ISOLimitAcceptable.ToString(); }
+            set
+            {
+                if (int.TryParse(value, out int res))
+                {
+                    ISOLimitAcceptable = res;
+                }
+            }
+        }
+
         public void ApplyChanges(ICameraViewModel vmdl)
         {
             ID = vmdl.ID;

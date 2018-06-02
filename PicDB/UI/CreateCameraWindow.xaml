@@ -2,57 +2,122 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        xmlns:self="clr-namespace:PicDB"
-        xmlns:System="clr-namespace:System;assembly=mscorlib"
-        Title="Create Camera" Height="500" Width="300" ResizeMode="NoResize">
+        xmlns:picDb="clr-namespace:PicDB"
+        Title="Create Camera" Height="320" Width="300" ResizeMode="NoResize">
 
-    <Grid>
+    <Grid Margin="10">
+        <Grid>
+            <Grid.Resources >
+                <Style TargetType="DatePicker" >
+                    <Setter Property="Margin" Value="0,3,0,3" />
+                </Style>
+                <Style TargetType="TextBox" >
+                    <Setter Property="Margin" Value="0,3,0,3" />
+                </Style>
+            </Grid.Resources>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="95"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="50" />
+            </Grid.RowDefinitions>
 
-        <DockPanel>
-            <Grid Margin="10, 10, 10, 10" DockPanel.Dock="Top">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="55"/>
-                    <RowDefinition Height="55"/>
-                    <RowDefinition Height="55"/>
-                    <RowDefinition Height="55"/>
-                    <RowDefinition Height="55"/>
-                    <RowDefinition Height="55"/>
-                    <RowDefinition Height="55"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <StackPanel Grid.Row="0">
-                    <Label Content="Producer" FontWeight="Bold" FontSize="14" />
-                    <TextBox Text="{Binding NewCamera.Producer}" />
-                </StackPanel>
-                <StackPanel Grid.Row="1">
-                    <Label Content="Make" FontWeight="Bold" FontSize="14"/>
-                    <TextBox Text="{Binding NewCamera.Make}" />
-                </StackPanel>
-                <StackPanel Grid.Row="2">
-                    <Label Content="ISO Limit Good" FontWeight="Bold" FontSize="14" />
-                    <TextBox Text="{Binding NewCamera.ISOLimitGood}" PreviewTextInput="TextBox_CheckNumericInput"/>
-                </StackPanel>
-                <StackPanel Grid.Row="3">
-                    <Label Content="ISO Limit Acceptable" FontWeight="Bold" FontSize="14"/>
-                    <TextBox Text="{Binding NewCamera.ISOLimitAcceptable}" PreviewTextInput="TextBox_CheckNumericInput"/>
-                </StackPanel>
-                <StackPanel Grid.Row="4">
-                    <Label Content="Keywords" FontWeight="Bold" FontSize="14"/>
-                    <TextBox Text="{Binding NewCamera.Keywords}" />
-                </StackPanel>
-                <StackPanel Grid.Row="5">
-                    <Label Content="Bought On" FontWeight="Bold" FontSize="14"/>
-                    <DatePicker SelectedDate="{Binding NewCamera.BoughtOn, Mode=TwoWay, TargetNullValue={x:Static System:DateTime.Now}}"/>
-                </StackPanel>
-                <StackPanel Grid.Row="6">
-                    <Label Content="Notes" FontWeight="Bold" FontSize="14"/>
-                    <TextBox Text="{Binding NewCamera.Notes}" />
-                </StackPanel>
-            </Grid>
+            <!-- TextBlocks -->
+            <Label Grid.Column="0" Grid.Row="0">Producer</Label>
+            <TextBox Name="TextBoxProducer" Grid.Column="1" Grid.Row="0">
+                <TextBox.Text>
+                    <Binding Path="NewCamera.Producer" UpdateSourceTrigger="PropertyChanged" >
+                        <Binding.ValidationRules>
+                            <picDb:TextBoxNotEmptyValidationRule ValidatesOnTargetUpdated="True"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
 
-            <Button Content="Save" DockPanel.Dock="Bottom" Height="25" Command="{Binding SaveCamera}"/>
-        </DockPanel>
+            <Label Grid.Column="0" Grid.Row="1">Make</Label>
+            <TextBox Name="TextBoxMake" Grid.Row="1" Grid.Column="1">
+                <TextBox.Text>
+                    <Binding Path="NewCamera.Make" UpdateSourceTrigger="PropertyChanged" >
+                        <Binding.ValidationRules>
+                            <picDb:TextBoxNotEmptyValidationRule ValidatesOnTargetUpdated="True"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+
+            <Label Grid.Column="0" Grid.Row="2">Bought On</Label>
+            <DatePicker Name="DatePickerBoughtOn" Grid.Row="2" Grid.Column="1">
+                <DatePicker.SelectedDate>
+                    <Binding Path="NewCamera.BoughtOn" UpdateSourceTrigger="PropertyChanged" >
+                        <Binding.ValidationRules>
+                            <picDb:BoughtOnValidationRule ValidatesOnTargetUpdated="True"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </DatePicker.SelectedDate>
+            </DatePicker>
+
+            <Label Grid.Column="0" Grid.Row="3">ISO Limit Good</Label>
+            <TextBox Name="TextBoxIsoLimitGood" Grid.Row="3" Grid.Column="1">
+                <TextBox.Text>
+                    <Binding Path="NewCamera.ISOLimitGoodTextConverter" UpdateSourceTrigger="PropertyChanged" >
+                        <Binding.ValidationRules>
+                            <picDb:ContainsOnlyNumbersValidationRule ValidatesOnTargetUpdated="True"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+
+            <Label Grid.Column="0" Grid.Row="4">ISO Limit Acc.</Label>
+            <TextBox Name="TextBoxIsoLimitAcceptable" Grid.Row="4" Grid.Column="1">
+                <TextBox.Text>
+                    <Binding Path="NewCamera.ISOLimitAcceptableTextConverter" UpdateSourceTrigger="PropertyChanged" >
+                        <Binding.ValidationRules>
+                            <picDb:ContainsOnlyNumbersValidationRule ValidatesOnTargetUpdated="True"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+
+            <Label Grid.Column="0" Grid.Row="5">Notes</Label>
+            <TextBox Name="TextBoxNotes" Grid.Row="5" Grid.Column="1">
+                <TextBox.Text>
+                    <Binding Path="NewCamera.Notes" UpdateSourceTrigger="PropertyChanged" />
+                </TextBox.Text>
+            </TextBox>
+
+            <Label Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Foreground="DarkGray">
+                <AccessText TextWrapping="Wrap" >
+                    * Attention: Bought On has to be in the past (Or today).
+                </AccessText>
+            </Label>
+        </Grid>
+
+        <Button Content="Submit" VerticalAlignment="Bottom" Command="{Binding SaveCamera}">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="IsEnabled" Value="false" />
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ElementName=TextBoxProducer, Path=(Validation.HasError)}" Value="false" />
+                                <Condition Binding="{Binding ElementName=TextBoxMake, Path=(Validation.HasError)}" Value="false" />
+                                <Condition Binding="{Binding ElementName=DatePickerBoughtOn, Path=(Validation.HasError)}" Value="false" />
+                                <Condition Binding="{Binding ElementName=TextBoxIsoLimitGood, Path=(Validation.HasError)}" Value="false" />
+                                <Condition Binding="{Binding ElementName=TextBoxIsoLimitAcceptable, Path=(Validation.HasError)}" Value="false" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="IsEnabled" Value="true" />
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
     </Grid>
 </Window>
+

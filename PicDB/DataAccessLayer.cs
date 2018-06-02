@@ -63,9 +63,14 @@ namespace PicDB
                 cmd.Parameters.AddWithValue("@Producer", camera.Producer);
                 cmd.Parameters.AddWithValue("@Make", camera.Make);
                 cmd.Parameters.AddWithValue("@BoughtOn", camera.BoughtOn);
-                cmd.Parameters.AddWithValue("@Notes", camera.Notes);
                 cmd.Parameters.AddWithValue("@ISOLimitGood", camera.ISOLimitGood);
                 cmd.Parameters.AddWithValue("@ISOLimitAcceptable", camera.ISOLimitAcceptable);
+
+                if (camera.Notes == null)
+                    cmd.Parameters.AddWithValue("@Notes", DBNull.Value);
+                else
+                    cmd.Parameters.AddWithValue("@Notes", camera.Notes);
+
 
                 int insId = (int)(decimal)cmd.ExecuteScalar();
                 camera.ID = insId;
@@ -91,6 +96,11 @@ namespace PicDB
                 cmd.Parameters.AddWithValue("@Notes", camera.Notes);
                 cmd.Parameters.AddWithValue("@ISOLimitGood", camera.ISOLimitGood);
                 cmd.Parameters.AddWithValue("@ISOLimitAcceptable", camera.ISOLimitAcceptable);
+
+                if (camera.Notes == null)
+                    cmd.Parameters.AddWithValue("@Notes", DBNull.Value);
+                else
+                    cmd.Parameters.AddWithValue("@Notes", camera.Notes);
 
                 int insId = (int)(decimal)cmd.ExecuteScalar();
                 camera.ID = insId;
@@ -912,7 +922,11 @@ namespace PicDB
                 cmd.Parameters.AddWithValue("@FirstName", photographer.FirstName);
                 cmd.Parameters.AddWithValue("@LastName", photographer.LastName);
                 cmd.Parameters.AddWithValue("@BirthDay", photographer.BirthDay);
-                cmd.Parameters.AddWithValue("@Notes", photographer.Notes);
+
+                if (photographer.Notes == null)
+                    cmd.Parameters.AddWithValue("@Notes", DBNull.Value);
+                else
+                    cmd.Parameters.AddWithValue("@Notes", photographer.Notes);
 
                 cmd.ExecuteScalar();
 
@@ -931,7 +945,11 @@ namespace PicDB
                 cmd.Parameters.AddWithValue("@FirstName", photographer.FirstName);
                 cmd.Parameters.AddWithValue("@LastName", photographer.LastName);
                 cmd.Parameters.AddWithValue("@BirthDay", photographer.BirthDay);
-                cmd.Parameters.AddWithValue("@Notes", photographer.Notes);
+
+                if (photographer.Notes == null)
+                    cmd.Parameters.AddWithValue("@Notes", DBNull.Value);
+                else
+                    cmd.Parameters.AddWithValue("@Notes", photographer.Notes);
 
                 int insId = (int)(decimal)cmd.ExecuteScalar();
                 photographer.ID = insId;

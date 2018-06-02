@@ -26,6 +26,7 @@ namespace PicDB
                         () =>
                         {
                             _bl.Save(Photographer);
+                            
                         },
                         () => true);
                 }

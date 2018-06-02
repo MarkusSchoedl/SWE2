@@ -119,7 +119,10 @@
     <Compile Include="ViewModels\SearchViewModel.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
     <Compile Include="Wpf\AgeValidationRule.cs" />
+    <Compile Include="Wpf\BoughtOnValidationRule.cs" />
+    <Compile Include="Wpf\ContainsOnlyNumbersValidationRule.cs" />
     <Compile Include="Wpf\ErrorCollectionToVisibility.cs" />
+    <Compile Include="Wpf\NumberToTextConverter.cs" />
     <Compile Include="Wpf\WpfTextBoxValidation.cs" />
     <Page Include="UI\CreateCameraWindow.xaml">
       <SubType>Designer</SubType>

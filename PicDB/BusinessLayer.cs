@@ -125,7 +125,7 @@ namespace PicDB
 
         public void Save(CameraModel newCamera)
         {
-            Save(newCamera);
+            _dal.Save(newCamera);
         }
     }
 }

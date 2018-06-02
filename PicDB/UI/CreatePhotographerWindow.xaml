@@ -51,7 +51,7 @@
                 </TextBox.Text>
             </TextBox>
 
-            <Label Grid.Column="0" Grid.Row="2">Notes</Label>
+            <Label Grid.Column="0" Grid.Row="2">Birth Day</Label>
             <DatePicker Name="DatePickerBirthDay" Grid.Row="2" Grid.Column="1">
                 <DatePicker.SelectedDate>
                     <Binding Path="Photographer.BirthDay" UpdateSourceTrigger="PropertyChanged" >
@@ -69,15 +69,6 @@
                     </Binding>
                 </TextBox.Text>
             </TextBox>
-
-            <!-- Validation List -->
-            <StackPanel Grid.Row="3">
-                <StackPanel.Resources>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="Foreground" Value="Red" />
-                    </Style>
-                </StackPanel.Resources>
-            </StackPanel>
 
             <Label Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Foreground="DarkGray">
                 <AccessText TextWrapping="Wrap" >

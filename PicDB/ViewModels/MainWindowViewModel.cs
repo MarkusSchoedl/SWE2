@@ -79,7 +79,7 @@ namespace PicDB.ViewModels
                         () =>
                         {
                             CreateCameraWindow createCameraWindow = new CreateCameraWindow();
-                            createCameraWindow.Show();
+                            createCameraWindow.ShowDialog();
                         },
                         () => true);
                 }
@@ -100,7 +100,7 @@ namespace PicDB.ViewModels
                         () =>
                         {
                             CreatePhotographerWindow createPhotographerWindow = new CreatePhotographerWindow();
-                            createPhotographerWindow.Show();
+                            createPhotographerWindow.ShowDialog();
                         },
                         () => true);
                 }
