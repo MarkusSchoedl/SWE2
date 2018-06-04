@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using BIF.SWE2.Interfaces.ViewModels;
+using PicDB.Models;
 
 namespace PicDB.ViewModels
 {
@@ -11,9 +11,15 @@ namespace PicDB.ViewModels
     {
         public PictureListViewModel()
         {
-            var pics = BusinessLayer.GetInstance().GetPictures().ToList();
+            var bl = BusinessLayer.GetInstance();
+            var pics = bl.GetPictures().ToList();
 
-            pics.ForEach(x => _list.Add(new PictureViewModel(x)));
+            pics.ForEach(x =>
+            {
+                _list.Add(new PictureViewModel(x));
+            });
+
+            CurrentPicture = _list.FirstOrDefault();
         }
 
         private List<PictureViewModel> _list = new List<PictureViewModel>();

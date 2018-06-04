@@ -103,6 +103,12 @@
     <Compile Include="Uebungen\UEB6.cs" />
     <Compile Include="Uebungen\UEB2.cs" />
     <Compile Include="Uebungen\UEB1.cs" />
+    <Compile Include="UI\ViewCamerasWindow.xaml.cs">
+      <DependentUpon>ViewCamerasWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ViewPhotographersWindow.xaml.cs">
+      <DependentUpon>ViewPhotographersWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\CameraListViewModel.cs" />
     <Compile Include="ViewModels\CameraViewModel.cs" />
     <Compile Include="ViewModels\CommandViewModel.cs" />
@@ -149,6 +155,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="UI\PicList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ViewCamerasWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ViewPhotographersWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

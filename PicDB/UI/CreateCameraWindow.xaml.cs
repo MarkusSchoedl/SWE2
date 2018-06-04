@@ -25,12 +25,5 @@ namespace PicDB
             DataContext = new CreateCameraViewModel();
             InitializeComponent();
         }
-
-        private void TextBox_CheckNumericInput(object sender, TextCompositionEventArgs e)
-        {
-            if (!char.IsDigit(e.Text, e.Text.Length - 1))
-                e.Handled = true;
-        }
-
     }
 }

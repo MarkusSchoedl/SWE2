@@ -20,7 +20,7 @@
                     <Grid>
                         <Image Width="120" Height="120" Stretch="UniformToFill">
                             <Image.Source>
-                                <BitmapImage DecodePixelWidth="200"  UriSource="{Binding FilePath}" />
+                                <BitmapImage DecodePixelWidth="200" UriSource="{Binding FilePath}" />
                             </Image.Source>
                         </Image>
                     </Grid>

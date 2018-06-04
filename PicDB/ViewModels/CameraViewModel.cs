@@ -33,6 +33,8 @@ namespace PicDB.ViewModels
 
         public int ID { get; set; }
 
+        public string DisplayName { get => Producer + " " + Make; }
+
         public string Producer { get; set; }
         public string Make { get; set; }
         public DateTime? BoughtOn { get; set; }
@@ -67,11 +69,13 @@ namespace PicDB.ViewModels
             }
         }
 
+        public string BoughtOnString => BoughtOn?.ToString("dd.MM.yyyy");
+
         public bool IsValidProducer => !String.IsNullOrEmpty(Producer);
 
         public bool IsValidMake => !String.IsNullOrEmpty(Make);
 
-        public bool IsValidBoughtOn => BoughtOn == null ? true : DateTime.Today > BoughtOn;
+        public bool IsValidBoughtOn => BoughtOn == null || DateTime.Today > BoughtOn;
 
         public decimal ISOLimitGood { get; set; }
         public decimal ISOLimitAcceptable { get; set; }

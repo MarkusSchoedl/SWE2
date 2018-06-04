@@ -6,8 +6,41 @@
              mc:Ignorable="d" >
     <Grid>
         <TabControl>
+            <TabItem Header="General">
+                <Grid Margin="10, 10, 10, 10" DockPanel.Dock="Top">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="55"/>
+                        <RowDefinition Height="55"/>
+                        <RowDefinition Height="55"/>
+                        <RowDefinition Height="55"/>
+                        <RowDefinition Height="55"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Row="0">
+                        <Label Content="{Binding CurrentPicture.DisplayName}" FontWeight="Bold" FontSize="14" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="1">
+                        <Label Content="Photographer" FontWeight="Bold" FontSize="14" />
+                        <ComboBox ItemsSource="{Binding Photographers.List}"
+                                  DisplayMemberPath="Name"
+                                  SelectedValuePath="{Binding CurrentPicture.Photographer}"
+                                  SelectedValue="{Binding CurrentPicture.Photographer}" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="2">
+                        <Label Content="Camera" FontWeight="Bold" FontSize="14" />
+                        <ComboBox ItemsSource="{Binding Cameras.List}"
+                                  DisplayMemberPath="DisplayName"
+                                  SelectedValuePath="{Binding CurrentPicture.Camera}"
+                                  SelectedValue="{Binding CurrentPicture.Camera}" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
             <TabItem Header="EXIF">
-                <DockPanel>
+                    <DockPanel>
 
                     <Grid Margin="10, 10, 10, 10" DockPanel.Dock="Top">
                         <Grid.RowDefinitions>
@@ -20,6 +53,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
+                        
                         <StackPanel Grid.Row="0">
                             <Label Content="Make" FontWeight="Bold" FontSize="14" />
                             <Label Content="{Binding CurrentPicture.EXIF.Make}" />
@@ -79,8 +113,6 @@
                             <TextBox Text="{Binding CurrentPicture.IPTC.Keywords}" />
                         </StackPanel>
                     </Grid>
-
-                    <Button Content="Apply" DockPanel.Dock="Bottom" Height="25" Command="{Binding ApplyChanges}"/>
                 </DockPanel>
             </TabItem>
         </TabControl>

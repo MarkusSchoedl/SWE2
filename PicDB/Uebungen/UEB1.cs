@@ -60,7 +60,7 @@ namespace Uebungen
 
         public IPhotographerListViewModel GetEmptyPhotographerListViewModel()
         {
-            return new PhotographerListViewModel();
+            return PhotographerListViewModel.GetInstance();
         }
 
         public IPhotographerModel GetEmptyPhotographerModel()
@@ -105,7 +105,7 @@ namespace Uebungen
 
         public ICameraListViewModel GetEmptyCameraListViewModel()
         {
-            return new CameraListViewModel();
+            return CameraListViewModel.GetInstance();
         }
 
         public ICameraViewModel GetEmptyCameraViewModel()

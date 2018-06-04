@@ -32,6 +32,8 @@ namespace PicDB.Models
             ((EXIFModel)EXIF).ApplyChanges(mdl.EXIF);
             Camera = mdl.Camera == null ? null : new CameraModel();
             ((CameraModel)Camera)?.ApplyChanges(mdl.Camera);
+            Photographer = mdl.Photographer == null ? null : new PhotographerModel();
+            ((PhotographerModel)Photographer)?.ApplyChanges(mdl.Photographer);
         }
 
         public int ID { get; set; }
@@ -39,5 +41,6 @@ namespace PicDB.Models
         public IIPTCModel IPTC { get; set; }
         public IEXIFModel EXIF { get; set; }
         public ICameraModel Camera { get; set; }
+        public IPhotographerModel Photographer { get; set; }
     }
 }

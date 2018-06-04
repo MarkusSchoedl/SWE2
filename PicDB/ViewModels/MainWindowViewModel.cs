@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -8,12 +9,14 @@ using PicDB.Models;
 
 namespace PicDB.ViewModels
 {
-    class MainWindowViewModel : ViewModel, IMainWindowViewModel
+    public class MainWindowViewModel : ViewModel, IMainWindowViewModel
     {
-        private static readonly BusinessLayer _bl = BusinessLayer.GetInstance();
+        private readonly BusinessLayer _bl = BusinessLayer.GetInstance();
 
         public MainWindowViewModel()
         {
+            _currentPicture = List.CurrentPicture;
+            
             if (!_bl.GetPictures().Any())
             {
                 MessageBox.Show("The Pictures Folder didnt contain any images. Add images and restart the app.", "PictureDB: Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -22,11 +25,8 @@ namespace PicDB.ViewModels
                 Application.Current.Shutdown();
             }
         }
-
-        private IPictureViewModel _currentPicture = new PictureViewModel(_bl.GetPicture(0));
-        private readonly IPictureListViewModel _list = new PictureListViewModel();
-        private readonly ISearchViewModel _search = new SearchViewModel();
-
+        
+        private IPictureViewModel _currentPicture;
         public IPictureViewModel CurrentPicture
         {
             get { return _currentPicture; }
@@ -34,38 +34,30 @@ namespace PicDB.ViewModels
             {
                 if (_currentPicture != value)
                 {
+                    var picModel = new PictureModel();
+                    picModel.ApplyChanges(_currentPicture);
+                    _bl.Save(picModel);
+
                     _currentPicture = value;
                     OnPropertyChanged("CurrentPicture");
                 }
-
             }
         }
 
-        public IPictureListViewModel List => _list;
-        public ISearchViewModel Search => _search;
+        public IPictureListViewModel List { get; } = new PictureListViewModel();
+        public ISearchViewModel Search { get; } = new SearchViewModel();
 
-        private ICommandViewModel _applyChanges;
-        public ICommandViewModel ApplyChanges
+        public IPhotographerListViewModel Photographers { get; } = PhotographerListViewModel.GetInstance();
+        public ICameraListViewModel Cameras { get; } = CameraListViewModel.GetInstance();
+
+        public void OnWindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            get
-            {
-                if (_applyChanges == null)
-                {
-                    _applyChanges = new SimpleCommandViewModel(
-                        "Apply Changes",
-                        "Apply changes from an input window to the picture",
-                        () =>
-                        {
-                            var mdl = new IPTCModel();
-                            mdl.ApplyChanges(CurrentPicture.IPTC);
-                            _bl.WriteIPTC(CurrentPicture.FileName, mdl);
-                        },
-                        () => true);
-                }
-                return _applyChanges;
-            }
+            var picModel = new PictureModel();
+            picModel.ApplyChanges(_currentPicture);
+            _bl.Save(picModel);
         }
 
+        #region Commands
         private ICommandViewModel _openCreateCameraWindow;
         public ICommandViewModel OpenCreateCameraWindow
         {
@@ -86,7 +78,7 @@ namespace PicDB.ViewModels
                 return _openCreateCameraWindow;
             }
         }
-        
+
         private ICommandViewModel _openCreatePhotographerWindow;
         public ICommandViewModel OpenCreatePhotographerWindow
         {
@@ -107,5 +99,48 @@ namespace PicDB.ViewModels
                 return _openCreatePhotographerWindow;
             }
         }
+
+        private ICommandViewModel _openViewPhotographerWindow;
+        public ICommandViewModel OpenViewPhotographerWindow
+        {
+            get
+            {
+                if (_openViewPhotographerWindow == null)
+                {
+                    _openViewPhotographerWindow = new SimpleCommandViewModel(
+                        "Create a new Photographer",
+                        "Opens a Window to create a new Photographer",
+                        () =>
+                        {
+                            ViewPhotographersWindow viewPhotographersWindow = new ViewPhotographersWindow();
+                            viewPhotographersWindow.ShowDialog();
+                        },
+                        () => true);
+                }
+                return _openViewPhotographerWindow;
+            }
+        }
+
+        private ICommandViewModel _openViewCameraWindow;
+        public ICommandViewModel OpenViewCameraWindow
+        {
+            get
+            {
+                if (_openViewCameraWindow == null)
+                {
+                    _openViewCameraWindow = new SimpleCommandViewModel(
+                        "Create a new Camera",
+                        "Opens a Window to create a new Camera",
+                        () =>
+                        {
+                            ViewCamerasWindow viewCamerasWindow = new ViewCamerasWindow();
+                            viewCamerasWindow.ShowDialog();
+                        },
+                        () => true);
+                }
+                return _openViewCameraWindow;
+            }
+        }
+        #endregion
     }
 }

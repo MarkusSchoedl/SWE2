@@ -36,6 +36,7 @@ namespace PicDB.ViewModels
 
         private DateTime? _birthDay;
         public DateTime? BirthDay { get => _birthDay; set => _birthDay = value; }
+        public string BirthDayDisplayString => BirthDay?.ToString("dd.MM.yyyy");
 
         private string _notes;
         public string Notes { get => _notes; set => _notes = value; }
@@ -68,5 +69,7 @@ namespace PicDB.ViewModels
         public bool IsValidLastName => !String.IsNullOrEmpty(_lastName);
 
         public bool IsValidBirthDay => BirthDay == null || DateTime.Today > BirthDay;
+
+        public string Name => FirstName + " " + LastName;
     }
 }

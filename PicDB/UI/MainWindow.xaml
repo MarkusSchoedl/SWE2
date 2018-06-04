@@ -11,29 +11,23 @@
             <Setter Property="BorderThickness" Value="1" />
         </Style>
     </Window.Resources>
+
     <Grid>
         <DockPanel>
             <Menu DockPanel.Dock="Top">
-                <MenuItem Header="_File">
-                    <MenuItem Header="_Open"/>
-                    <MenuItem Header="_Close"/>
-                    <MenuItem Header="_Save"/>
-                </MenuItem>
                 <MenuItem Header="_Photographers">
-                    <MenuItem Header="_Anzeigen">
-                        <MenuItem.Icon>
-                            <Image Source="/Images/Add.png" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Header="_Hinzufügen" Command="{Binding OpenCreatePhotographerWindow}">
-                        <MenuItem.Icon>
+                    <MenuItem Header="_Add" Command="{Binding OpenCreatePhotographerWindow}"/>
+                    <!--<MenuItem.Icon>
                             <Image Source="/Images/List.png" />
-                        </MenuItem.Icon>
-                    </MenuItem>
+                        </MenuItem.Icon>-->
+                    <MenuItem Header="_View" Command="{Binding OpenViewPhotographerWindow}"/>
+                    <!--<MenuItem.Icon>
+                            <Image Source="/Images/Add.png" />
+                        </MenuItem.Icon>-->
                 </MenuItem>
                 <MenuItem Header="_Camera">
                     <MenuItem Header="_Add" Command="{Binding OpenCreateCameraWindow}"/>
-                    <MenuItem Header="_View"/>
+                    <MenuItem Header="_View" Command="{Binding OpenViewCameraWindow}"/>
                 </MenuItem>
             </Menu>
 

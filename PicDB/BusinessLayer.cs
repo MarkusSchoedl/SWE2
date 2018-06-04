@@ -5,17 +5,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace PicDB
 {
     class BusinessLayer : IBusinessLayer
     {
+        public List<PhotographerModel> Photographers { get; private set; } = new List<PhotographerModel>();
+
         #region Singleton
         protected static BusinessLayer _instance;
 
         private BusinessLayer()
         {
             Sync();
+            Photographers = (List<PhotographerModel>) _dal.GetPhotographers();
         }
 
         public static BusinessLayer GetInstance()
@@ -24,6 +28,7 @@ namespace PicDB
             {
                 _instance = new BusinessLayer();
             }
+
             return _instance;
         }
         #endregion
@@ -32,7 +37,8 @@ namespace PicDB
 
         public void DeletePhotographer(int ID)
         {
-            throw new NotImplementedException();
+            Photographers.Remove(Photographers.FirstOrDefault(x => x.ID == ID));
+            _dal.DeletePhotographer(ID);
         }
 
         public void DeletePicture(int ID)
@@ -44,7 +50,7 @@ namespace PicDB
         {
             if (filename == "Img1.jpg")
             {
-                return new EXIFModel {ExposureTime = 1, FNumber = 1, ISOValue = 1, Make = "make"};
+                return new EXIFModel { ExposureTime = 1, FNumber = 1, ISOValue = 1, Make = "make" };
             }
 
             throw new NotImplementedException();
@@ -79,12 +85,14 @@ namespace PicDB
 
         public IPhotographerModel GetPhotographer(int ID)
         {
-            return _dal.GetPhotographer(ID);
+            if(Photographers.Any(x => x.ID == ID))
+                return Photographers.First(x => x.ID == ID);
+            return null;
         }
 
         public IEnumerable<IPhotographerModel> GetPhotographers()
         {
-            return _dal.GetPhotographers();
+            return Photographers;
         }
 
         public IPictureModel GetPicture(int ID)
@@ -105,12 +113,25 @@ namespace PicDB
 
         public void Save(IPictureModel picture)
         {
-            _dal.Save(picture);
+            Task.Run(() => _dal.Save(picture));
         }
 
         public void Save(IPhotographerModel photographer)
         {
-            _dal.Save(photographer);
+            if (Photographers.Any(x => x.ID == photographer.ID))
+            {
+                var apply = Photographers.First(x => x.ID == photographer.ID);
+                apply.FirstName = photographer.FirstName;
+                apply.LastName = photographer.LastName;
+                apply.BirthDay = photographer.BirthDay;
+                apply.Notes = photographer.Notes;
+            }
+            else
+            {
+                Photographers.Add((PhotographerModel)photographer);
+            }
+
+            Task.Run(() => _dal.Save(photographer));
         }
 
         public void Sync()
@@ -125,7 +146,7 @@ namespace PicDB
 
         public void Save(CameraModel newCamera)
         {
-            _dal.Save(newCamera);
+            Task.Run(() => _dal.Save(newCamera)); 
         }
     }
 }

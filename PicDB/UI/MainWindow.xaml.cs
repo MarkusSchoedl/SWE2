@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using PicDB.ViewModels;
 
 namespace PicDB
@@ -12,6 +13,7 @@ namespace PicDB
         {
             InitializeComponent();
             DataContext = new MainWindowViewModel();
+            Closing += ((MainWindowViewModel)DataContext).OnWindowClosing;
         }
     }
 }

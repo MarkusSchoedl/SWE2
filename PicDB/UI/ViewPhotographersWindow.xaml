@@ -1,0 +1,23 @@
+﻿<Window x:Class="PicDB.ViewPhotographersWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PicDB"
+        mc:Ignorable="d"
+        Title="ViewPhotographersWindow" Height="300" Width="580" ResizeMode="NoResize">
+    <Grid>
+        <DataGrid Height="250" x:Name="Imported" VerticalAlignment="Top" ItemsSource="{Binding List}"  AutoGenerateColumns="False" CanUserResizeColumns="True" CanUserAddRows="False" IsReadOnly="True" HorizontalScrollBarVisibility="Hidden">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="40" Header="ID" Binding="{Binding ID}"/>
+                <DataGridTextColumn Width="90" Header="Firstname" Binding="{Binding FirstName}"/>
+                <DataGridTextColumn Width="90" Header="Lastname" Binding="{Binding LastName}"/>
+                <DataGridTextColumn Width="90" Header="Birthday" Binding="{Binding BirthDayDisplayString}"/>
+                <DataGridTextColumn Width="60" Header="Pictures" Binding="{Binding NumberOfPictures}"/>
+                <DataGridTextColumn Width="187" Header="Notes" Binding="{Binding Notes}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Button Command="{Binding}" Height="20" VerticalAlignment="Bottom">Delete Selected</Button>
+    </Grid>
+</Window>

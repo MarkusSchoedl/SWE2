@@ -136,7 +136,10 @@ namespace PicDB
                     camera.Producer = (string)reader[0];
                     camera.Make = (string)reader[1];
                     camera.BoughtOn = (DateTime)reader[2];
-                    camera.Notes = (string)reader[3];
+                    if (reader[3] is DBNull)
+                        camera.Notes = "";
+                    else
+                        camera.Notes = (string)reader[3];
                     camera.ISOLimitGood = (decimal)reader[4];
                     camera.ISOLimitAcceptable = (decimal)reader[5];
                 }
@@ -163,9 +166,7 @@ namespace PicDB
             {
                 Open(db);
 
-                SqlCommand cmd = new SqlCommand();
-
-                cmd.CommandText = "SELECT ID FROM Camera;";
+                SqlCommand cmd = new SqlCommand("SELECT ID FROM Camera;", db);
 
                 SqlDataReader reader = cmd.ExecuteReader();
 
@@ -228,11 +229,11 @@ namespace PicDB
 
                 if (id == 0)
                 {
-                    cmd = new SqlCommand("SELECT TOP 1 FileName, fk_IPTC_ID, fk_EXIF_ID, fk_Camera_ID FROM Picture;", db);
+                    cmd = new SqlCommand("SELECT TOP 1 FileName, fk_IPTC_ID, fk_EXIF_ID, fk_Camera_ID, fk_Photographer_ID FROM Picture;", db);
                 }
                 else
                 {
-                    cmd = new SqlCommand("SELECT FileName, fk_IPTC_ID, fk_EXIF_ID, fk_Camera_ID FROM Picture WHERE ID = @ID;", db);
+                    cmd = new SqlCommand("SELECT FileName, fk_IPTC_ID, fk_EXIF_ID, fk_Camera_ID, fk_Photographer_ID FROM Picture WHERE ID = @ID;", db);
 
                     cmd.Parameters.AddWithValue("@ID", id);
                 }
@@ -259,16 +260,20 @@ namespace PicDB
                     {
                         picture.Camera = null;
                     }
-                }
 
-                //else
-                //{
-                //    picture = null;
-                //}
+                    // Photographer might be null
+                    if (reader[4] != DBNull.Value)
+                    {
+                        picture.Photographer = GetPhotographer((int)reader[4]);
+                    }
+                    else
+                    {
+                        picture.Photographer = null;
+                    }
+                }
 
                 db.Close();
             }
-
 
             return picture;
         }
@@ -416,10 +421,6 @@ namespace PicDB
             {
                 Update(picture.ID, picture.IPTC);
                 Update(picture.ID, picture.EXIF);
-                if (picture.Camera != null)
-                {
-                    UpdateCamera(picture);
-                }
             }
 
             else
@@ -428,6 +429,12 @@ namespace PicDB
                 int exifId = Insert(picture.EXIF);
                 Insert(picture, iptcId, exifId);
             }
+
+            if (picture.Camera != null)
+                UpdateCamera(picture);
+
+            if (((PictureModel)picture).Photographer != null)
+                AssignPhotographerToPicture(picture, ((PictureModel)picture).Photographer);
         }
 
         private bool Exists(IPictureModel picture)
@@ -467,6 +474,33 @@ namespace PicDB
 
                 int insId = (int)(decimal)cmd.ExecuteScalar();
                 picture.ID = insId;
+
+                db.Close();
+            }
+        }
+
+        public void AssignPhotographerToPicture(IPictureModel picture, IPhotographerModel photographer)
+        {
+            if (picture.ID == 0)
+            {
+                picture.ID = GetPictureId(picture.FileName);
+            }
+
+            if (photographer.ID == 0)
+            {
+                Save(photographer);
+            }
+
+            using (var db = new SqlConnection(Resources.DBConnectionString))
+            {
+                Open(db);
+
+                SqlCommand cmd = new SqlCommand("UPDATE Picture SET fk_Photographer_ID = @fk_Photographer_ID WHERE ID = @ID;", db);
+
+                cmd.Parameters.AddWithValue("@ID", picture.ID);
+                cmd.Parameters.AddWithValue("@fk_Photographer_ID", photographer.ID);
+
+                cmd.ExecuteScalar();
 
                 db.Close();
             }
@@ -823,20 +857,21 @@ namespace PicDB
                     photographer.FirstName = (string)reader[0];
                     photographer.LastName = (string)reader[1];
                     photographer.BirthDay = (DateTime)reader[2];
-                    photographer.Notes = (string)reader[3];
+
+                    if (reader[3] is DBNull)
+                    {
+                        photographer.Notes = "";
+                    }
+                    else
+                    {
+                        photographer.Notes = (string)reader[3];
+                    }
                 }
 
                 db.Close();
 
                 return photographer;
             }
-
-            //if (id == 1234)
-            //{
-            //    return new PhotographerModel { ID = id };
-            //}
-
-            //return _Photographers.FirstOrDefault(x => x.ID == id);
         }
 
         public IEnumerable<IPhotographerModel> GetPhotographers()
@@ -848,9 +883,7 @@ namespace PicDB
             {
                 Open(db);
 
-                SqlCommand cmd = new SqlCommand();
-
-                cmd.CommandText = "SELECT ID FROM Photographer;";
+                SqlCommand cmd = new SqlCommand("SELECT ID FROM Photographer;", db);
 
                 SqlDataReader reader = cmd.ExecuteReader();
 
@@ -953,11 +986,6 @@ namespace PicDB
 
                 int insId = (int)(decimal)cmd.ExecuteScalar();
                 photographer.ID = insId;
-
-                if (photographer.ID == 0 && photographer.LastName == "Testinger")
-                {
-                    photographer.ID = 1;
-                }
 
                 db.Close();
             }

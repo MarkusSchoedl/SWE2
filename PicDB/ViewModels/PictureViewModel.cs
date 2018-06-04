@@ -11,7 +11,7 @@ using PicDB.Properties;
 
 namespace PicDB.ViewModels
 {
-    class PictureViewModel : IPictureViewModel
+    class PictureViewModel : ViewModel, IPictureViewModel
     {
         #region Constructor
         public PictureViewModel()
@@ -24,8 +24,16 @@ namespace PicDB.ViewModels
 
             IPTC = new IPTCViewModel((IPTCModel)model.IPTC);
             EXIF = new EXIFViewModel((EXIFModel)model.EXIF);
+
             if (model.Camera != null)
-                Camera = new CameraViewModel((CameraModel)model.Camera);
+                Camera = CameraListViewModel.GetInstance().List.FirstOrDefault(x => x.ID == model.Camera.ID);
+
+            if (((PictureModel)model).Photographer != null)
+            {
+                var pList = PhotographerListViewModel.GetInstance().List;
+
+                Photographer = pList.FirstOrDefault(p => p.ID == ((PictureModel) model).Photographer.ID);
+            }
 
             FileName = model.FileName;
 
@@ -45,7 +53,20 @@ namespace PicDB.ViewModels
 
         public IEXIFViewModel EXIF { get; set; }
 
-        public IPhotographerViewModel Photographer { get; set; }
+        private IPhotographerViewModel _photographer;
+        public IPhotographerViewModel Photographer
+        {
+            get { return _photographer; }
+            set
+            {
+                if (_photographer != value)
+                {
+                    _photographer = value;
+                    OnPropertyChanged("Photographer");
+                    OnPropertyChanged("DisplayName");
+                }
+            }
+        }
 
         public ICameraViewModel Camera { get; set; }
     }
