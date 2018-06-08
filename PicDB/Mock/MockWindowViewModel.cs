@@ -12,7 +12,7 @@ namespace PicDB.ViewModels
         private static MockBusinessLayer _bl = MockBusinessLayer.GetInstance();
 
         private IPictureViewModel _currentPicture = new PictureViewModel();
-        private IPictureListViewModel _list = new PictureListViewModel();
+        private IPictureListViewModel _list = new MockPictureListViewModel();
         private ISearchViewModel _search = new SearchViewModel();
 
         public IPictureViewModel CurrentPicture => _currentPicture;

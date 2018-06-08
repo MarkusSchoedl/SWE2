@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -34,12 +35,15 @@ namespace PicDB.ViewModels
             {
                 if (_currentPicture != value)
                 {
-                    var picModel = new PictureModel();
-                    picModel.ApplyChanges(_currentPicture);
-                    _bl.Save(picModel);
+                    if (_currentPicture != null)
+                    {
+                        var picModel = new PictureModel();
+                        picModel.ApplyChanges(_currentPicture);
+                        _bl.Save(picModel);
+                    }
 
                     _currentPicture = value;
-                    OnPropertyChanged("CurrentPicture");
+                    OnPropertyChanged(nameof(CurrentPicture));
                 }
             }
         }
@@ -49,15 +53,65 @@ namespace PicDB.ViewModels
 
         public IPhotographerListViewModel Photographers { get; } = PhotographerListViewModel.GetInstance();
         public ICameraListViewModel Cameras { get; } = CameraListViewModel.GetInstance();
-
+        
         public void OnWindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            var picModel = new PictureModel();
-            picModel.ApplyChanges(_currentPicture);
-            _bl.Save(picModel);
+            if (_currentPicture != null)
+            {
+                var picModel = new PictureModel();
+                picModel.ApplyChanges(_currentPicture);
+                _bl.Save(picModel);
+            }
         }
 
         #region Commands
+        private ICommandViewModel _searchPictures;
+        public ICommandViewModel SearchPicturesCommand
+        {
+            get
+            {
+                if (_searchPictures == null)
+                {
+                    _searchPictures = new SimpleCommandViewModel(
+                        "Searches all Pictures",
+                        "Searches all Pictures filtering by EXIF, IPTC and Photographer",
+                        () =>
+                        {
+                            var search = (SearchViewModel)Search;
+                            var searched = _bl.GetPictures(null, search.Photographer, search.IPTC, search.EXIF);
+                            ObservableCollection<PictureViewModel> picList = new ObservableCollection<PictureViewModel>();
+                            searched.ToList().ForEach(mdl => picList.Add(new PictureViewModel(mdl)));
+                            CurrentPicture = ((PictureListViewModel)List).SetSearchList(picList);
+                            OnPropertyChanged(nameof(CurrentPicture));
+                        },
+                        () => true);
+                }
+                return _searchPictures;
+            }
+        }
+
+        private ICommandViewModel _resetPictures;
+        public ICommandViewModel ResetPicturesCommand
+        {
+            get
+            {
+                if (_resetPictures == null)
+                {
+                    _resetPictures = new SimpleCommandViewModel(
+                        "Reset Pictures",
+                        "Resets the Pictures to the full list again",
+                        () =>
+                        {
+                            CurrentPicture = ((PictureListViewModel)List).ResetSearch() ?? CurrentPicture;
+                            ((SearchViewModel)Search).ResetTextFields();
+                            OnPropertyChanged(nameof(CurrentPicture));
+                        },
+                        () => true);
+                }
+                return _resetPictures;
+            }
+        }
+
         private ICommandViewModel _openCreateCameraWindow;
         public ICommandViewModel OpenCreateCameraWindow
         {
@@ -72,10 +126,35 @@ namespace PicDB.ViewModels
                         {
                             CreateCameraWindow createCameraWindow = new CreateCameraWindow();
                             createCameraWindow.ShowDialog();
+
+                            OnPropertyChanged("Cameras");
                         },
                         () => true);
                 }
                 return _openCreateCameraWindow;
+            }
+        }
+
+        private ICommandViewModel _openViewCameraWindow;
+        public ICommandViewModel OpenViewCameraWindow
+        {
+            get
+            {
+                if (_openViewCameraWindow == null)
+                {
+                    _openViewCameraWindow = new SimpleCommandViewModel(
+                        "Create a new Camera",
+                        "Opens a Window to create a new Camera",
+                        () =>
+                        {
+                            ViewCamerasWindow viewCamerasWindow = new ViewCamerasWindow();
+                            viewCamerasWindow.ShowDialog();
+
+                            OnPropertyChanged("Cameras");
+                        },
+                        () => true);
+                }
+                return _openViewCameraWindow;
             }
         }
 
@@ -93,6 +172,8 @@ namespace PicDB.ViewModels
                         {
                             CreatePhotographerWindow createPhotographerWindow = new CreatePhotographerWindow();
                             createPhotographerWindow.ShowDialog();
+
+                            OnPropertyChanged("Photographers");
                         },
                         () => true);
                 }
@@ -114,31 +195,12 @@ namespace PicDB.ViewModels
                         {
                             ViewPhotographersWindow viewPhotographersWindow = new ViewPhotographersWindow();
                             viewPhotographersWindow.ShowDialog();
+
+                            OnPropertyChanged("Photographers");
                         },
                         () => true);
                 }
                 return _openViewPhotographerWindow;
-            }
-        }
-
-        private ICommandViewModel _openViewCameraWindow;
-        public ICommandViewModel OpenViewCameraWindow
-        {
-            get
-            {
-                if (_openViewCameraWindow == null)
-                {
-                    _openViewCameraWindow = new SimpleCommandViewModel(
-                        "Create a new Camera",
-                        "Opens a Window to create a new Camera",
-                        () =>
-                        {
-                            ViewCamerasWindow viewCamerasWindow = new ViewCamerasWindow();
-                            viewCamerasWindow.ShowDialog();
-                        },
-                        () => true);
-                }
-                return _openViewCameraWindow;
             }
         }
         #endregion

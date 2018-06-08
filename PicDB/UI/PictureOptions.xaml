@@ -3,118 +3,257 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:picDb="clr-namespace:PicDB"
              mc:Ignorable="d" >
-    <Grid>
-        <TabControl>
-            <TabItem Header="General">
-                <Grid Margin="10, 10, 10, 10" DockPanel.Dock="Top">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="55"/>
-                        <RowDefinition Height="55"/>
-                        <RowDefinition Height="55"/>
-                        <RowDefinition Height="55"/>
-                        <RowDefinition Height="55"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
 
-                    <StackPanel Grid.Row="0">
-                        <Label Content="{Binding CurrentPicture.DisplayName}" FontWeight="Bold" FontSize="14" />
-                    </StackPanel>
-                    <StackPanel Grid.Row="1">
-                        <Label Content="Photographer" FontWeight="Bold" FontSize="14" />
-                        <ComboBox ItemsSource="{Binding Photographers.List}"
+    <UserControl.Resources>
+        <Image x:Key="MagnifierImage" Source="/Images/Magnifier.png"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <DockPanel>
+            <TabControl DockPanel.Dock="Top">
+                <TabItem Header="General">
+                    <Grid Margin="10, 10, 10, 10" DockPanel.Dock="Top">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="55"/>
+                            <RowDefinition Height="55"/>
+                            <RowDefinition Height="55"/>
+                            <RowDefinition Height="55"/>
+                            <RowDefinition Height="55"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Row="0">
+                            <Label Content="{Binding CurrentPicture.DisplayName}" FontWeight="Bold" FontSize="14" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="1">
+                            <Label Content="Photographer" FontWeight="Bold" FontSize="14" />
+                            <ComboBox ItemsSource="{Binding Photographers.List}"
                                   DisplayMemberPath="Name"
                                   SelectedValuePath="{Binding CurrentPicture.Photographer}"
                                   SelectedValue="{Binding CurrentPicture.Photographer}" />
-                    </StackPanel>
-                    <StackPanel Grid.Row="2">
-                        <Label Content="Camera" FontWeight="Bold" FontSize="14" />
-                        <ComboBox ItemsSource="{Binding Cameras.List}"
+                        </StackPanel>
+                        <StackPanel Grid.Row="2">
+                            <Label Content="Camera" FontWeight="Bold" FontSize="14" />
+                            <ComboBox ItemsSource="{Binding Cameras.List}"
                                   DisplayMemberPath="DisplayName"
                                   SelectedValuePath="{Binding CurrentPicture.Camera}"
                                   SelectedValue="{Binding CurrentPicture.Camera}" />
-                    </StackPanel>
-                </Grid>
-            </TabItem>
-
-            <TabItem Header="EXIF">
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="EXIF">
                     <DockPanel>
 
-                    <Grid Margin="10, 10, 10, 10" DockPanel.Dock="Top">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="55"/>
-                            <RowDefinition Height="55"/>
-                            <RowDefinition Height="55"/>
-                            <RowDefinition Height="55"/>
-                            <RowDefinition Height="55"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        
-                        <StackPanel Grid.Row="0">
-                            <Label Content="Make" FontWeight="Bold" FontSize="14" />
-                            <Label Content="{Binding CurrentPicture.EXIF.Make}" />
-                        </StackPanel>
-                        <StackPanel Grid.Row="1">
-                            <Label Content="FNumber" FontWeight="Bold" FontSize="14"  />
-                            <Label Content="{Binding CurrentPicture.EXIF.FNumber}" />
-                        </StackPanel>
-                        <StackPanel Grid.Row="2">
-                            <Label Content="Exposure Time" FontWeight="Bold" FontSize="14" />
-                            <Label Content="{Binding CurrentPicture.EXIF.ExposureTime}" />
-                        </StackPanel>
-                        <StackPanel Grid.Row="3">
-                            <Label Content="ISO Value"  FontWeight="Bold" FontSize="14" />
-                            <Label Content="{Binding CurrentPicture.EXIF.ISOValue}" />
-                        </StackPanel>
-                        <StackPanel Grid.Row="4">
-                            <Label Content="Flash"  FontWeight="Bold" FontSize="14" />
-                            <Label Content="{Binding CurrentPicture.EXIF.Flash}" />
-                        </StackPanel>
-                    </Grid>
+                        <Grid Margin="10, 10, 10, 10" DockPanel.Dock="Top">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="55"/>
+                                <RowDefinition Height="55"/>
+                                <RowDefinition Height="55"/>
+                                <RowDefinition Height="55"/>
+                                <RowDefinition Height="55"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
-                </DockPanel>
-            </TabItem>
-            <TabItem Header="IPTC">
+                            <StackPanel Grid.Row="0">
+                                <Label Content="Make" FontWeight="Bold" FontSize="14" />
+                                <Label Content="{Binding CurrentPicture.EXIF.Make}" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="1">
+                                <Label Content="FNumber" FontWeight="Bold" FontSize="14"  />
+                                <Label Content="{Binding CurrentPicture.EXIF.FNumber}" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="2">
+                                <Label Content="Exposure Time" FontWeight="Bold" FontSize="14" />
+                                <Label Content="{Binding CurrentPicture.EXIF.ExposureTime}" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="3">
+                                <Label Content="ISO Value"  FontWeight="Bold" FontSize="14" />
+                                <Label Content="{Binding CurrentPicture.EXIF.ISOValue}" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="4">
+                                <Label Content="Flash"  FontWeight="Bold" FontSize="14" />
+                                <Label Content="{Binding CurrentPicture.EXIF.Flash}" />
+                            </StackPanel>
+                        </Grid>
 
-                <DockPanel>
-                    <Grid Margin="10, 10, 10, 10" DockPanel.Dock="Top">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="55"/>
-                            <RowDefinition Height="55"/>
-                            <RowDefinition Height="55"/>
-                            <RowDefinition Height="55"/>
-                            <RowDefinition Height="55"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Row="0">
-                            <Label Content="Headline" FontWeight="Bold" FontSize="14" />
-                            <TextBox Text="{Binding CurrentPicture.IPTC.Headline}" />
-                        </StackPanel>
-                        <StackPanel Grid.Row="1">
-                            <Label Content="Caption" FontWeight="Bold" FontSize="14"/>
-                            <TextBox Text="{Binding CurrentPicture.IPTC.Caption}" />
-                        </StackPanel>
-                        <StackPanel Grid.Row="2">
-                            <Label Content="ByLine" FontWeight="Bold" FontSize="14" />
-                            <TextBox Text="{Binding CurrentPicture.IPTC.ByLine}" FontSize="14"/>
-                        </StackPanel>
-                        <StackPanel Grid.Row="3">
-                            <Label Content="Copyright Notice" FontWeight="Bold" FontSize="14"/>
-                            <TextBox Text="{Binding CurrentPicture.IPTC.CopyrightNotice}" />
-                        </StackPanel>
-                        <StackPanel Grid.Row="4">
-                            <Label Content="Keywords" FontWeight="Bold" FontSize="14"/>
-                            <TextBox Text="{Binding CurrentPicture.IPTC.Keywords}" />
-                        </StackPanel>
-                    </Grid>
-                </DockPanel>
-            </TabItem>
-        </TabControl>
+                    </DockPanel>
+                </TabItem>
+                <TabItem Header="IPTC">
+
+                    <DockPanel>
+                        <Grid Margin="10, 10, 10, 10" DockPanel.Dock="Top">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="55"/>
+                                <RowDefinition Height="55"/>
+                                <RowDefinition Height="55"/>
+                                <RowDefinition Height="55"/>
+                                <RowDefinition Height="55"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Row="0">
+                                <Label Content="Headline" FontWeight="Bold" FontSize="14" />
+                                <TextBox Text="{Binding CurrentPicture.IPTC.Headline}" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="1">
+                                <Label Content="Caption" FontWeight="Bold" FontSize="14"/>
+                                <TextBox Text="{Binding CurrentPicture.IPTC.Caption}" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="2">
+                                <Label Content="ByLine" FontWeight="Bold" FontSize="14" />
+                                <TextBox Text="{Binding CurrentPicture.IPTC.ByLine}" FontSize="14"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="3">
+                                <Label Content="Copyright Notice" FontWeight="Bold" FontSize="14"/>
+                                <TextBox Text="{Binding CurrentPicture.IPTC.CopyrightNotice}" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="4">
+                                <Label Content="Keywords" FontWeight="Bold" FontSize="14"/>
+                                <TextBox Text="{Binding CurrentPicture.IPTC.Keywords}" />
+                            </StackPanel>
+                        </Grid>
+                    </DockPanel>
+                </TabItem>
+                <TabItem Header="Search" HorizontalAlignment="Right">
+                    <DockPanel>
+                        <DockPanel.Resources >
+                            <Style TargetType="DatePicker" >
+                                <Setter Property="Margin" Value="0,3,0,3" />
+                            </Style>
+                            <Style TargetType="TextBox" >
+                                <Setter Property="Margin" Value="0,3,0,3" />
+                            </Style>
+                        </DockPanel.Resources>
+
+                        <Grid Margin="10, 10, 10, 10" DockPanel.Dock="Top">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="110"/>
+                                <RowDefinition Height="140"/>
+                                <RowDefinition Height="170"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Photographer Search -->
+                            <StackPanel Grid.Row="0">
+                                <Label Content="Photographer Filter" FontWeight="Bold" FontSize="14" />
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Content="First Name" Grid.Row="0" Grid.Column="0"/>
+                                    <TextBox Text="{Binding Search.Photographer.FirstName}" Grid.Row="0" Grid.Column="1"/>
+                                    <Label Content="Last Name" Grid.Column="0" Grid.Row="1" />
+                                    <TextBox Text="{Binding Search.Photographer.LastName}" Grid.Column="1" Grid.Row="1"/>
+                                    <Label Content="Notes" Grid.Column="0" Grid.Row="2"/>
+                                    <TextBox Text="{Binding Search.Photographer.Notes}" Grid.Column="1" Grid.Row="2"/>
+                                </Grid>
+                            </StackPanel>
+
+                            <!-- EXIF Search -->
+                            <StackPanel Grid.Row="1">
+                                <Label Content="EXIF Filter" FontWeight="Bold" FontSize="14"  />
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Content="Make" Grid.Row="0" Grid.Column="0"/>
+                                    <TextBox Text="{Binding Search.EXIF.Make}" Grid.Row="0" Grid.Column="1"/>
+                                    <Label Content="FNumber" Grid.Column="0" Grid.Row="1" />
+                                    <TextBox Grid.Column="1" Grid.Row="1">
+                                        <TextBox.Text>
+                                            <Binding Path="Search.EXIF.FNumber" UpdateSourceTrigger="PropertyChanged" >
+                                                <Binding.ValidationRules>
+                                                    <picDb:ContainsOnlyFloatingNumbersValidationRule ValidatesOnTargetUpdated="True"/>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                    <Label Content="ISO Value" Grid.Column="0" Grid.Row="2"/>
+                                    <TextBox Grid.Column="1" Grid.Row="2">
+                                        <TextBox.Text>
+                                            <Binding Path="Search.EXIF.ISOValue" UpdateSourceTrigger="PropertyChanged" >
+                                                <Binding.ValidationRules>
+                                                    <picDb:ContainsOnlyFloatingNumbersValidationRule ValidatesOnTargetUpdated="True"/>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                    <Label Content="Exposure Time" Grid.Column="0" Grid.Row="3"/>
+                                    <TextBox Grid.Column="1" Grid.Row="3">
+                                        <TextBox.Text>
+                                            <Binding Path="Search.EXIF.ExposureTime" UpdateSourceTrigger="PropertyChanged" >
+                                                <Binding.ValidationRules>
+                                                    <picDb:ContainsOnlyFloatingNumbersValidationRule ValidatesOnTargetUpdated="True"/>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                </Grid>
+                            </StackPanel>
+
+                            <!-- IPTC Search -->
+                            <StackPanel Grid.Row="2">
+                                <Label Content="IPTC Filter" FontWeight="Bold" FontSize="14" />
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Content="Headline" Grid.Column="0" Grid.Row="0"/>
+                                    <TextBox Text="{Binding Search.IPTC.Headline}" Grid.Column="1" Grid.Row="0"/>
+                                    <Label Content="Caption" Grid.Column="0" Grid.Row="1" />
+                                    <TextBox Text="{Binding Search.IPTC.Caption}" Grid.Column="1" Grid.Row="1"/>
+                                    <Label Content="By-Line" Grid.Column="0" Grid.Row="2"/>
+                                    <TextBox Text="{Binding Search.IPTC.ByLine}" Grid.Column="1" Grid.Row="2"/>
+                                    <Label Content="Keywords" Grid.Column="0" Grid.Row="3"/>
+                                    <TextBox Text="{Binding Search.IPTC.Keywords}" Grid.Column="1" Grid.Row="3"/>
+                                    <Label Content="Copyright" Grid.Column="0" Grid.Row="4"/>
+                                    <TextBox Text="{Binding Search.IPTC.CopyrightNotice}" Grid.Column="1" Grid.Row="4"/>
+                                </Grid>
+                            </StackPanel>
+
+                            <!-- Search & Reset Button -->
+                            <DockPanel Grid.Row="3" VerticalAlignment="Bottom">
+                                <Button Command="{Binding SearchPicturesCommand}" DockPanel.Dock="Left" Height="20" Width="90" Content="Search" HorizontalAlignment="Left" Background="LightGreen"/>
+                                <Button Command="{Binding ResetPicturesCommand}" DockPanel.Dock="Right" Height="20" Width="90" Content="Reset" HorizontalAlignment="Right" Background="IndianRed"/>
+                            </DockPanel>
+                        </Grid>
+                    </DockPanel>
+                </TabItem>
+            </TabControl>
+        </DockPanel>
     </Grid>
 </UserControl>

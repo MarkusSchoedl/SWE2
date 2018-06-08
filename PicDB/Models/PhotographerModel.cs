@@ -8,7 +8,7 @@ using BIF.SWE2.Interfaces.ViewModels;
 
 namespace PicDB.Models
 {
-    class PhotographerModel : IPhotographerModel
+    public class PhotographerModel : IPhotographerModel
     {
         public int ID { get; set; }
         public string FirstName { get; set; }

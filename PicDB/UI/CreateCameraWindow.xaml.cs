@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using PicDB.ViewModels;
 
 namespace PicDB
 {
@@ -22,7 +23,7 @@ namespace PicDB
     {
         public CreateCameraWindow()
         {
-            DataContext = new CreateCameraViewModel();
+            DataContext = CameraListViewModel.GetInstance();
             InitializeComponent();
         }
     }

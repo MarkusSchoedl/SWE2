@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using PicDB.ViewModels;
 
 namespace PicDB
 {
@@ -10,7 +11,7 @@ namespace PicDB
     {
         public CreatePhotographerWindow()
         {
-            DataContext = new CreatePhotographerViewModel();
+            DataContext = PhotographerListViewModel.GetInstance();
             InitializeComponent();
         }
     }

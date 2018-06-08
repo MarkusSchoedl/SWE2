@@ -34,7 +34,7 @@ namespace Uebungen
 
         public IPictureViewModel GetPictureViewModel(BIF.SWE2.Interfaces.Models.IPictureModel mdl)
         {
-            return new PictureViewModel((PictureModel)mdl);
+            return new MockPictureViewModel((PictureModel)mdl);
         }
 
         public void TestSetup(string picturePath)

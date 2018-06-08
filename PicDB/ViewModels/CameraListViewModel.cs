@@ -1,41 +1,43 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
-using System.Linq;
+ using System.Collections.ObjectModel;
+ using System.Linq;
 using System.Text;
-
-using BIF.SWE2.Interfaces.ViewModels;
+ using System.Windows;
+ using BIF.SWE2.Interfaces.ViewModels;
+ using PicDB.Models;
 
 namespace PicDB.ViewModels
 {
-    public class CameraListViewModel : ICameraListViewModel
+    public class MockCameraListViewModel : ViewModel, ICameraListViewModel
     {
         #region Singleton
-        private static CameraListViewModel _instance;
+        private static MockCameraListViewModel _instance;
 
-        protected CameraListViewModel()
+        protected MockCameraListViewModel()
         {
             _bl.GetCameras().ToList().ForEach(cam => _cameras.Add(new CameraViewModel(cam)));
         }
 
-        public static CameraListViewModel GetInstance()
+        public static MockCameraListViewModel GetInstance()
         {
             if (_instance == null)
             {
-                _instance = new CameraListViewModel();
+                _instance = new MockCameraListViewModel();
             }
 
             return _instance;
         }
 
         #endregion
-        private BusinessLayer _bl = BusinessLayer.GetInstance();
 
-
-        private List<ICameraViewModel> _cameras = new List<ICameraViewModel>();
+        private MockBusinessLayer _bl = MockBusinessLayer.GetInstance();
+        
+        private ObservableCollection<ICameraViewModel> _cameras = new ObservableCollection<ICameraViewModel>();
         public IEnumerable<ICameraViewModel> List
         {
             get => _cameras;
-            set => _cameras = value.ToList();
+            private set => _cameras = value as ObservableCollection<ICameraViewModel>;
         }
 
         public ICameraViewModel CurrentCamera { get; set; }

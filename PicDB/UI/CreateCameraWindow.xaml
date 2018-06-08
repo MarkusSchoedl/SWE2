@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:picDb="clr-namespace:PicDB"
-        Title="Create Camera" Height="320" Width="300" ResizeMode="NoResize">
+        Name="WindowCreateCamera" Title="Create Camera" Height="320" Width="300" ResizeMode="NoResize">
 
     <Grid Margin="10">
         <Grid>
@@ -99,7 +99,7 @@
             </Label>
         </Grid>
 
-        <Button Content="Submit" VerticalAlignment="Bottom" Command="{Binding SaveCamera}">
+        <Button Content="Submit" VerticalAlignment="Bottom" Command="{Binding SaveCamera}" CommandParameter="{Binding ElementName=WindowCreateCamera}">
             <Button.Style>
                 <Style TargetType="{x:Type Button}">
                     <Setter Property="IsEnabled" Value="false" />

@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:self="clr-namespace:PicDB"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
-        Title="Create Photographer" Height="240" Width="250" ResizeMode="NoResize">
+        Name="CreatePhotographerWindowWindow" Title="Create Photographer" Height="240" Width="250" ResizeMode="NoResize">
 
 
     <Grid Margin="10">
@@ -32,7 +32,7 @@
             <Label Grid.Column="0" Grid.Row="0">First Name</Label>
             <TextBox Name="TextBoxFirstName" Grid.Column="1" Grid.Row="0">
                 <TextBox.Text>
-                    <Binding Path="Photographer.FirstName" UpdateSourceTrigger="PropertyChanged" >
+                    <Binding Path="NewPhotographer.FirstName" UpdateSourceTrigger="PropertyChanged" >
                         <Binding.ValidationRules>
                             <self:TextBoxNotEmptyValidationRule ValidatesOnTargetUpdated="True"/>
                         </Binding.ValidationRules>
@@ -43,7 +43,7 @@
             <Label Grid.Column="0" Grid.Row="1">Last Name</Label>
             <TextBox Name="TextBoxLastName" Grid.Row="1" Grid.Column="1">
                 <TextBox.Text>
-                    <Binding Path="Photographer.LastName" UpdateSourceTrigger="PropertyChanged" >
+                    <Binding Path="NewPhotographer.LastName" UpdateSourceTrigger="PropertyChanged" >
                         <Binding.ValidationRules>
                             <self:TextBoxNotEmptyValidationRule ValidatesOnTargetUpdated="True"/>
                         </Binding.ValidationRules>
@@ -54,7 +54,7 @@
             <Label Grid.Column="0" Grid.Row="2">Birth Day</Label>
             <DatePicker Name="DatePickerBirthDay" Grid.Row="2" Grid.Column="1">
                 <DatePicker.SelectedDate>
-                    <Binding Path="Photographer.BirthDay" UpdateSourceTrigger="PropertyChanged" >
+                    <Binding Path="NewPhotographer.BirthDay" UpdateSourceTrigger="PropertyChanged" >
                         <Binding.ValidationRules>
                             <self:AgeValidationRule ValidatesOnTargetUpdated="True"/>
                         </Binding.ValidationRules>
@@ -65,21 +65,19 @@
             <Label Grid.Column="0" Grid.Row="3">Notes</Label>
             <TextBox Name="TextBoxNotes" Grid.Row="3" Grid.Column="1">
                 <TextBox.Text>
-                    <Binding Path="Photographer.Notes" UpdateSourceTrigger="PropertyChanged" >
+                    <Binding Path="NewPhotographer.Notes" UpdateSourceTrigger="PropertyChanged" >
                     </Binding>
                 </TextBox.Text>
             </TextBox>
 
             <Label Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Foreground="DarkGray">
                 <AccessText TextWrapping="Wrap" >
-                   * Attention: The Photographer has to be at least 12 years old.
+                    * Attention: The Photographer has to be at least 12 years old.
                 </AccessText>
             </Label>
-
-            <!--<Label Grid.Row="4" Grid.ColumnSpan="2">Attention: The Photographer has to be at least 12 years old.</Label>-->
         </Grid>
 
-        <Button Content="Submit" VerticalAlignment="Bottom" Command="{Binding SavePhotographer}">
+        <Button Content="Submit" VerticalAlignment="Bottom" Command="{Binding SavePhotographer}" CommandParameter="{Binding ElementName=CreatePhotographerWindowWindow}">
             <Button.Style>
                 <Style TargetType="{x:Type Button}">
                     <Setter Property="IsEnabled" Value="false" />

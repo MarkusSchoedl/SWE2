@@ -24,10 +24,37 @@ namespace PicDB
         {
             InitializeComponent();
         }
-        
-        private void ApplyChangesClick(object sender, RoutedEventArgs e)
+
+        private String _placeholder = "Enter your Search criteria here...";
+
+        private void TextBoxSearchGotFocus(object sender, RoutedEventArgs e)
         {
-            //BusinessLayer.GetInstance().Save();
+            TextBox textBox = (TextBox)sender;
+            if (textBox.Text == _placeholder)
+            {
+                textBox.Text = "";
+                textBox.Foreground = new SolidColorBrush(Colors.Black);
+            }
+        }
+
+        private void TextBoxSearchLostFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+            if (String.IsNullOrWhiteSpace(textBox.Text))
+            {
+                textBox.Text = _placeholder;
+                textBox.Foreground = new SolidColorBrush(Colors.DarkGray);
+            }
+        }
+
+        private void TextBoxSearchInitialize(object sender, RoutedEventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+            if (String.IsNullOrWhiteSpace(textBox.Text))
+            {
+                textBox.Text = _placeholder;
+                textBox.Foreground = new SolidColorBrush(Colors.DarkGray);
+            }
         }
     }
 }

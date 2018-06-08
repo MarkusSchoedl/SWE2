@@ -113,7 +113,7 @@ namespace PicDB
 
         public void Save(IPictureModel picture)
         {
-            Task.Run(() => _dal.Save(picture));
+            _dal.Save(picture);
         }
 
         public void Save(IPhotographerModel photographer)
@@ -146,7 +146,7 @@ namespace PicDB
 
         public void Save(CameraModel newCamera)
         {
-            Task.Run(() => _dal.Save(newCamera)); 
+            _dal.Save(newCamera); 
         }
     }
 }

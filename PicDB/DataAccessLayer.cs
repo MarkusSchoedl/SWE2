@@ -312,20 +312,129 @@ namespace PicDB
 
         public IEnumerable<IPictureModel> GetPictures(string namePart, IPhotographerModel photographerParts, IIPTCModel iptcParts, IEXIFModel exifParts)
         {
+            List<PictureModel> filteredPictures = new List<PictureModel>();
 
-            throw new NotImplementedException();
+            using (var db = new SqlConnection(Resources.DBConnectionString))
+            {
+                Open(db);
 
-            //if (_pictures.Count == 0 && namePart == null && photographerParts == null && iptcParts == null && exifParts == null)
-            //{
-            //    for (int i = 0; i < 5; i++) _pictures.Add(new PictureModel { ID = i });
-            //}
+                SqlCommand cmd = new SqlCommand(@"SELECT Picture.ID, Picture.FileName, Picture.fk_IPTC_ID, Picture.fk_EXIF_ID, 
+                                                Picture.fk_Camera_ID, Picture.fk_Photographer_ID FROM Picture 
+                                                JOIN EXIF ON EXIF.ID = Picture.fk_EXIF_ID JOIN IPTC ON IPTC.ID = Picture.fk_IPTC_ID
+                                                JOIN Photographer ON Photographer.ID = Picture.fk_Photographer_ID WHERE ", db);
 
-            //if (namePart != null)
-            //{
-            //    _pictures.Add(new PictureModel(namePart));
-            //}
+                // Set up SQL Query with parameters
+                {
+                    if (photographerParts != null)
+                    {
+                        if (!String.IsNullOrEmpty(photographerParts.FirstName))
+                        {
+                            cmd.CommandText += "Photographer.FirstName LIKE @PhotographerFirstname AND ";
+                            cmd.Parameters.AddWithValue("@PhotographerFirstname", photographerParts.FirstName);
+                        }
 
-            //return _pictures;
+                        if (!String.IsNullOrEmpty(photographerParts.LastName))
+                        {
+                            cmd.CommandText += "Photographer.LastName LIKE @PhotographerLastName AND ";
+                            cmd.Parameters.AddWithValue("@PhotographerLastName", photographerParts.LastName);
+                        }
+
+                        if (!String.IsNullOrEmpty(photographerParts.Notes))
+                        {
+                            cmd.CommandText += "Photographer.Notes LIKE @PhotographerNotes AND ";
+                            cmd.Parameters.AddWithValue("@PhotographerNotes", photographerParts.Notes);
+                        }
+                    }
+
+                    if (exifParts != null)
+                    {
+                        if (!String.IsNullOrEmpty(exifParts.Make))
+                        {
+                            cmd.CommandText += "EXIF.Make LIKE @ExifMake AND ";
+                            cmd.Parameters.AddWithValue("@ExifMake", exifParts.Make);
+                        }
+
+                        if (exifParts.ExposureTime != 0)
+                        {
+                            cmd.CommandText += "EXIF.ExposureTime LIKE @ExposureTime AND ";
+                            cmd.Parameters.AddWithValue("@ExposureTime", exifParts.ExposureTime);
+                        }
+
+                        if (exifParts.FNumber != 0)
+                        {
+                            cmd.CommandText += "EXIF.FNumber LIKE @FNumber AND ";
+                            cmd.Parameters.AddWithValue("@FNumber", exifParts.FNumber);
+                        }
+
+                        if (exifParts.ISOValue != 0)
+                        {
+                            cmd.CommandText += "EXIF.ISOValue LIKE @ExifISOValue AND ";
+                            cmd.Parameters.AddWithValue("@ExifISOValue", exifParts.ISOValue);
+                        }
+                    }
+                    
+                    if (iptcParts != null)
+                    {
+                        if (!String.IsNullOrEmpty(iptcParts.ByLine))
+                        {
+                            cmd.CommandText += "IPTC.ByLine LIKE @IPTCByLine AND ";
+                            cmd.Parameters.AddWithValue("@IPTCByLine", iptcParts.ByLine);
+                        }
+
+                        if (!String.IsNullOrEmpty(iptcParts.Headline))
+                        {
+                            cmd.CommandText += "IPTC.Headline LIKE @Headline AND ";
+                            cmd.Parameters.AddWithValue("@Headline", iptcParts.Headline);
+                        }
+
+                        if (!String.IsNullOrEmpty(iptcParts.Caption))
+                        {
+                            cmd.CommandText += "IPTC.Caption LIKE @Caption AND ";
+                            cmd.Parameters.AddWithValue("@Caption", iptcParts.Caption);
+                        }
+
+                        if (!String.IsNullOrEmpty(iptcParts.CopyrightNotice))
+                        {
+                            cmd.CommandText += "IPTC.CopyrightNotice LIKE @CopyrightNotice AND ";
+                            cmd.Parameters.AddWithValue("@CopyrightNotice", iptcParts.CopyrightNotice);
+                        }
+
+                        if (!String.IsNullOrEmpty(iptcParts.Keywords))
+                        {
+                            cmd.CommandText += "IPTC.Keywords LIKE @Keywords AND ";
+                            cmd.Parameters.AddWithValue("@Keywords", iptcParts.Keywords);
+                        }
+                    }
+
+                    cmd.CommandText += " 1=1;";
+                }
+
+                var reader = cmd.ExecuteReader();
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        var picture = new PictureModel
+                        {
+                            ID = (int)reader[0],
+                            FileName = (string)reader[1],
+                            IPTC = GetIptc((int)reader[2]),
+                            EXIF = GetExif((int)reader[3]),
+                            // Camera might be null
+                            Camera = reader[4] != DBNull.Value ? GetCamera((int)reader[4]) : null,
+                            // Photographer might be null
+                            Photographer = reader[5] != DBNull.Value ? GetPhotographer((int)reader[5]) : null
+                        };
+
+                        filteredPictures.Add(picture);
+                    }
+                }
+
+                db.Close();
+            }
+
+            return filteredPictures;
         }
 
         public IEnumerable<PictureModel> GetPictures()
@@ -479,7 +588,7 @@ namespace PicDB
             }
         }
 
-        public void AssignPhotographerToPicture(IPictureModel picture, IPhotographerModel photographer)
+        private void AssignPhotographerToPicture(IPictureModel picture, IPhotographerModel photographer)
         {
             if (picture.ID == 0)
             {
@@ -1005,7 +1114,6 @@ namespace PicDB
 
                 db.Close();
             }
-            //_Photographers.Remove(_Photographers.FirstOrDefault(x => x.ID == id));
         }
         #endregion
     }

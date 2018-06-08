@@ -4,17 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="View Cameras" Height="200" Width="400">
+        Title="View Cameras" Height="200" Width="460" ResizeMode="NoResize">
     <Grid>
-        <DataGrid Height="150" x:Name="Imported" VerticalAlignment="Top" ItemsSource="{Binding List}"  AutoGenerateColumns="False" CanUserResizeColumns="True" CanUserAddRows="False" IsReadOnly="True">
+        <DataGrid x:Name="Imported" VerticalAlignment="Top" ItemsSource="{Binding List}"  AutoGenerateColumns="False" CanUserResizeColumns="True" 
+                  CanUserAddRows="False" IsReadOnly="True" CanUserDeleteRows="False" HorizontalScrollBarVisibility="Hidden">
             <DataGrid.Columns>
                 <DataGridTextColumn Width="40" Header="ID" Binding="{Binding ID}"/>
+                <DataGridTextColumn Width="100" Header="Producer" Binding="{Binding Producer}"/>
                 <DataGridTextColumn Width="100" Header="Make" Binding="{Binding Make}"/>
                 <DataGridTextColumn Width="100" Header="Bought On" Binding="{Binding BoughtOnString}"/>
                 <DataGridTextColumn Width="160" Header="Notes" Binding="{Binding Notes}"/>
             </DataGrid.Columns>
         </DataGrid>
-
-        <Button Command="{Binding}" Height="20" VerticalAlignment="Bottom">Delete Selected</Button>
     </Grid>
 </Window>
